@@ -50,7 +50,15 @@ public class Tard_T {
                     handleEvent(taskList, userInput);
                     break;
                 default:
-                    System.out.println("'" + taskType + "' is not a valid input.\n" + LINE);
+                    System.out.println("'" + taskType + "' is not a valid input.\n"
+                    + "Valid input formats: \n"
+                    + "bye -> exits the interface\n"
+                    + "list -> lists all the tasks and their status\n"
+                    + "mark [task number] -> marks the task and show their status\n"
+                    + "unmark [task number] -> unmarks the task and show their status\n"
+                    + "todo [task name] -> adds a todo task to taskList\n"
+                    + "deadline [task name] /by [deadline] -> adds a deadline task to taskList\n"
+                    + "event [task name] /from [start time] /to [end time] -> adds an event task to taskList");
             }
 
             System.out.println(LINE);
@@ -109,6 +117,11 @@ public class Tard_T {
 
     public static void handleTodo(List<Task> taskList, String userInput) {
         String task = userInput.substring(5);
+
+        if (task.isEmpty()) {
+            System.out.println("    Invalid format: Description of todo cannot be empty. Use: todo [task name]");
+            return;
+        }
         Task newTask = new ToDo(task);
         taskList.add(newTask);
         System.out.println("Got it. I've added this task:\n  " + newTask.toString()
