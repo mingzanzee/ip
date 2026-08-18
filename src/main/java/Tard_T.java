@@ -50,7 +50,7 @@ public class Tard_T {
                     handleEvent(taskList, userInput);
                     break;
                 default:
-                    System.out.println("'" + taskType + "' is not a valid input.\n"
+                    printError(new TardTException("'" + taskType + "' is not a valid input.\n"
                     + "Valid input formats: \n"
                     + "bye -> exits the interface\n"
                     + "list -> lists all the tasks and their status\n"
@@ -58,7 +58,7 @@ public class Tard_T {
                     + "unmark [task number] -> unmarks the task and show their status\n"
                     + "todo [task name] -> adds a todo task to taskList\n"
                     + "deadline [task name] /by [deadline] -> adds a deadline task to taskList\n"
-                    + "event [task name] /from [start time] /to [end time] -> adds an event task to taskList");
+                    + "event [task name] /from [start time] /to [end time] -> adds an event task to taskList"));
             }
 
             System.out.println(LINE);
@@ -118,107 +118,88 @@ public class Tard_T {
     public static void handleTodo(List<Task> taskList, String userInput) {
         String task = userInput.substring(5);
 
-        if (task.isEmpty()) {
-            System.out.println("    Invalid format: Description of todo cannot be empty. Use: todo [task name]");
-            return;
+        try {
+            if (task.isEmpty()) {
+                throw new TardTException(
+                        "    Invalid format: Description of todo cannot be empty. Use: todo [task name]");
+            }
+            Task newTask = new ToDo(task);
+            taskList.add(newTask);
+            System.out.println("Got it. I've added this task:\n  " + newTask.toString()
+            + "\nNow you have " + taskList.size() + " tasks in the list.");
+        } catch (TardTException e) {
+            printError(e);
         }
-        Task newTask = new ToDo(task);
-        taskList.add(newTask);
-        System.out.println("Got it. I've added this task:\n  " + newTask.toString()
-        + "\nNow you have " + taskList.size() + " tasks in the list.");
     }
 
     // AI-generated to save time
     public static void handleDeadline(List<Task> taskList, String userInput) {
-        // Remove "deadline " prefix
-        String rest = userInput.substring(9).trim();
+        try {
+            String rest = userInput.substring(9).trim();
+            int byIndex = rest.indexOf(" /by ");
+            if (byIndex == -1) {
+                throw new TardTException("    Invalid format. Use: deadline [task name] /by [deadline]");
+            }
 
-        // Check if it contains " /by "
-        int byIndex = rest.indexOf(" /by ");
+            String description = rest.substring(0, byIndex).trim();
+            String by = rest.substring(byIndex + 5).trim();
+            if (description.isEmpty()) {
+                throw new TardTException("    Please provide a task description.");
+            }
+            if (by.isEmpty()) {
+                throw new TardTException("    Please provide a deadline.");
+            }
 
-        if (byIndex == -1) {
-            System.out.println("    Invalid format. Use: deadline [task name] /by [deadline]");
-            return;
+            Task newTask = new Deadline(description, by);
+            taskList.add(newTask);
+            System.out.println("    Got it. I've added this task:");
+            System.out.println("      " + newTask.toString());
+            System.out.println("    Now you have " + taskList.size() + " tasks in the list.");
+        } catch (TardTException e) {
+            printError(e);
         }
-
-        // Extract description and deadline
-        String description = rest.substring(0, byIndex).trim();
-        String by = rest.substring(byIndex + 5).trim(); // Remove " /by "
-
-        // Check if description is empty
-        if (description.isEmpty()) {
-            System.out.println("    Please provide a task description.");
-            return;
-        }
-
-        // Check if deadline is empty
-        if (by.isEmpty()) {
-            System.out.println("    Please provide a deadline.");
-            return;
-        }
-
-        // Create and add the task
-        Task newTask = new Deadline(description, by);
-        taskList.add(newTask);
-
-        System.out.println("    Got it. I've added this task:");
-        System.out.println("      " + newTask.toString());
-        System.out.println("    Now you have " + taskList.size() + " tasks in the list.");
     }
 
     // AI-generated to save time
     public static void handleEvent(List<Task> taskList, String userInput) {
-        // Remove "event " prefix
-        String rest = userInput.substring(6).trim();
+        try {
+            String rest = userInput.substring(6).trim();
+            int fromIndex = rest.indexOf(" /from ");
+            if (fromIndex == -1) {
+                throw new TardTException("    Invalid format. Use: event [task name] /from [start] /to [end]");
+            }
 
-        // Check if it contains " /from "
-        int fromIndex = rest.indexOf(" /from ");
+            String description = rest.substring(0, fromIndex).trim();
+            String afterDesc = rest.substring(fromIndex + 7).trim();
+            int toIndex = afterDesc.indexOf(" /to ");
+            if (toIndex == -1) {
+                throw new TardTException("    Invalid format. Use: event [task name] /from [start] /to [end]");
+            }
 
-        if (fromIndex == -1) {
-            System.out.println("    Invalid format. Use: event [task name] /from [start] /to [end]");
-            return;
+            String from = afterDesc.substring(0, toIndex).trim();
+            String to = afterDesc.substring(toIndex + 5).trim();
+            if (description.isEmpty()) {
+                throw new TardTException("    Please provide a task description.");
+            }
+            if (from.isEmpty()) {
+                throw new TardTException("    Please provide a start time.");
+            }
+            if (to.isEmpty()) {
+                throw new TardTException("    Please provide an end time.");
+            }
+
+            Task newTask = new Event(description, from, to);
+            taskList.add(newTask);
+            System.out.println("    Got it. I've added this task:");
+            System.out.println("      " + newTask.toString());
+            System.out.println("    Now you have " + taskList.size() + " tasks in the list.");
+        } catch (TardTException e) {
+            printError(e);
         }
+    }
 
-        // Extract description
-        String description = rest.substring(0, fromIndex).trim();
-        String afterDesc = rest.substring(fromIndex + 7).trim(); // Remove " /from "
-
-        // Check if it contains " /to "
-        int toIndex = afterDesc.indexOf(" /to ");
-
-        if (toIndex == -1) {
-            System.out.println("    Invalid format. Use: event [task name] /from [start] /to [end]");
-            return;
-        }
-
-        // Extract start and end times
-        String from = afterDesc.substring(0, toIndex).trim();
-        String to = afterDesc.substring(toIndex + 5).trim(); // Remove " /to "
-
-        // Validate
-        if (description.isEmpty()) {
-            System.out.println("    Please provide a task description.");
-            return;
-        }
-
-        if (from.isEmpty()) {
-            System.out.println("    Please provide a start time.");
-            return;
-        }
-
-        if (to.isEmpty()) {
-            System.out.println("    Please provide an end time.");
-            return;
-        }
-
-        // Create and add the task
-        Task newTask = new Event(description, from, to);
-        taskList.add(newTask);
-
-        System.out.println("    Got it. I've added this task:");
-        System.out.println("      " + newTask.toString());
-        System.out.println("    Now you have " + taskList.size() + " tasks in the list.");
+    /** Prints the message carried by a user-facing Tard_T exception. */
+    private static void printError(TardTException exception) {
+        System.out.println(exception.getMessage());
     }
 }
-
-
