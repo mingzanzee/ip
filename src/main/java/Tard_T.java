@@ -6,6 +6,35 @@ import java.util.Scanner;
 public class Tard_T {
     public static final String LINE = "________________________________";
 
+    /** Represents the supported command keywords and an unrecognised input. */
+    private enum Command {
+        BYE("bye"),
+        LIST("list"),
+        MARK("mark"),
+        UNMARK("unmark"),
+        TODO("todo"),
+        DEADLINE("deadline"),
+        EVENT("event"),
+        DELETE("delete"),
+        INVALID(null);
+
+        private final String keyword;
+
+        Command(String keyword) {
+            this.keyword = keyword;
+        }
+
+        /** Returns the command that matches the input keyword, if one exists. */
+        static Command fromKeyword(String keyword) {
+            for (Command command : values()) {
+                if (keyword.equals(command.keyword)) {
+                    return command;
+                }
+            }
+            return INVALID;
+        }
+    }
+
     public static void main(String[] args) {
 
         String intro = "Hello! I'm Tard_T. \n" +
@@ -25,31 +54,32 @@ public class Tard_T {
 
 
             String taskType = userInput.split(" ")[0];
+            Command command = Command.fromKeyword(taskType);
 
-            switch (taskType) {
-                case "bye":
+            switch (command) {
+                case BYE:
                     handleBye();
                     toExit = true;
                     break;
-                case "list":
+                case LIST:
                     handleList(taskList);
                     break;
-                case "mark":
+                case MARK:
                     handleMark(taskList, userInput);
                     break;
-                case "unmark":
+                case UNMARK:
                     handleUnmark(taskList, userInput);
                     break;
-                case "todo":
+                case TODO:
                     handleTodo(taskList, userInput);
                     break;
-                case "deadline":
+                case DEADLINE:
                     handleDeadline(taskList, userInput);
                     break;
-                case "event":
+                case EVENT:
                     handleEvent(taskList, userInput);
                     break;
-                case "delete":
+                case DELETE:
                     handleDelete(taskList, userInput);
                     break;
                 default:
