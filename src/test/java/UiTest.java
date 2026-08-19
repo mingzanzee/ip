@@ -19,35 +19,120 @@ class UiTest {
     /** Runs every planned UI case and prints its input and captured output. */
     @Test
     void runsUiTestPlan() {
+        String welcome = "Hello! I'm Tard_T. \n"
+                + "What can I do for you? \n"
+                + "________________________________\n\n";
+        String separator = "________________________________\n";
+        String goodbye = separator + "Bye. Hope to see you again soon!\n" + separator;
+
         List<UiTestCase> cases = List.of(
                 new UiTestCase(
                         "Exit the application",
                         "Verify that the application shows its welcome message and exits politely when the user enters bye.",
                         "bye\n",
-                        "Hello! I'm Tard_T. \n"
-                                + "What can I do for you? \n"
-                                + "________________________________\n\n"
-                                + "________________________________\n"
-                                + "Bye. Hope to see you again soon!\n"
-                                + "________________________________\n"),
+                        welcome + goodbye),
                 new UiTestCase(
-                        "Add and list a to-do task",
-                        "Verify that a todo command adds a task and that list displays the task with its to-do status.",
-                        "todo read book\nlist\nbye\n",
-                        "Hello! I'm Tard_T. \n"
-                                + "What can I do for you? \n"
-                                + "________________________________\n\n"
-                                + "________________________________\n"
+                        "Reject an unknown command without changing tasks",
+                        "Verify that an invalid command is rejected and that the following valid command creates the first task.",
+                        "nonsense\ntodo read book\nlist\nbye\n",
+                        welcome + separator
+                                + "'nonsense' is not a valid input.\n"
+                                + "Valid input formats: \n"
+                                + "bye -> exits the interface\n"
+                                + "list -> lists all the tasks and their status\n"
+                                + "mark [task number] -> marks the task and show their status\n"
+                                + "unmark [task number] -> unmarks the task and show their status\n"
+                                + "todo [task name] -> adds a todo task to taskList\n"
+                                + "deadline [task name] /by [deadline] -> adds a deadline task to taskList\n"
+                                + "event [task name] /from [start time] /to [end time] -> adds an event task to taskList\n"
+                                + "delete [task number] -> deletes a task from taskList\n"
+                                + separator + separator
                                 + "Got it. I've added this task:\n"
                                 + "  [T][ ] read book\n"
                                 + "Now you have 1 tasks in the list.\n"
-                                + "________________________________\n"
-                                + "________________________________\n"
+                                + separator + separator
                                 + "1. [T][ ] read book\n"
-                                + "________________________________\n"
-                                + "________________________________\n"
-                                + "Bye. Hope to see you again soon!\n"
-                                + "________________________________\n")
+                                + separator + goodbye),
+                new UiTestCase(
+                        "Add and list a deadline",
+                        "Verify that a valid deadline is stored and displayed with its deadline value.",
+                        "deadline submit assignment /by Friday\nlist\nbye\n",
+                        welcome + separator
+                                + "    Got it. I've added this task:\n"
+                                + "      [D][ ] submit assignment (by: Friday)\n"
+                                + "    Now you have 1 tasks in the list.\n"
+                                + separator + separator
+                                + "1. [D][ ] submit assignment (by: Friday)\n"
+                                + separator + goodbye),
+                new UiTestCase(
+                        "Reject a malformed deadline without changing tasks",
+                        "Verify that a malformed deadline is rejected and does not add a second task.",
+                        "todo read book\ndeadline submit assignment\nlist\nbye\n",
+                        welcome + separator
+                                + "Got it. I've added this task:\n"
+                                + "  [T][ ] read book\n"
+                                + "Now you have 1 tasks in the list.\n"
+                                + separator + separator
+                                + "    Invalid format. Use: deadline [task name] /by [deadline]\n"
+                                + separator + separator
+                                + "1. [T][ ] read book\n"
+                                + separator + goodbye),
+                new UiTestCase(
+                        "Add and list an event",
+                        "Verify that a valid event is stored and displayed with its start and end times.",
+                        "event lecture /from 2pm /to 4pm\nlist\nbye\n",
+                        welcome + separator
+                                + "    Got it. I've added this task:\n"
+                                + "      [E][ ] lecture (from: 2pm to: 4pm)\n"
+                                + "    Now you have 1 tasks in the list.\n"
+                                + separator + separator
+                                + "1. [E][ ] lecture (from: 2pm to: 4pm)\n"
+                                + separator + goodbye),
+                new UiTestCase(
+                        "Reject a non-numeric mark without changing task status",
+                        "Verify that an invalid mark number is rejected and the existing task remains unmarked.",
+                        "todo read book\nmark one\nlist\nbye\n",
+                        welcome + separator
+                                + "Got it. I've added this task:\n"
+                                + "  [T][ ] read book\n"
+                                + "Now you have 1 tasks in the list.\n"
+                                + separator + separator
+                                + "    'one' is not a valid integer.\n"
+                                + separator + separator + separator
+                                + "1. [T][ ] read book\n"
+                                + separator + goodbye),
+                new UiTestCase(
+                        "Delete a task and list the remaining task",
+                        "Verify that delete removes the specified task and list renumbers the remaining task.",
+                        "todo read book\ndeadline submit assignment /by Friday\ndelete 1\nlist\nbye\n",
+                        welcome + separator
+                                + "Got it. I've added this task:\n"
+                                + "  [T][ ] read book\n"
+                                + "Now you have 1 tasks in the list.\n"
+                                + separator + separator
+                                + "    Got it. I've added this task:\n"
+                                + "      [D][ ] submit assignment (by: Friday)\n"
+                                + "    Now you have 2 tasks in the list.\n"
+                                + separator + separator
+                                + "Noted, I've removed this task: \n"
+                                + "  [T][ ] read book\n"
+                                + "    Now you have 1 tasks in the list.\n"
+                                + separator + separator
+                                + "1. [D][ ] submit assignment (by: Friday)\n"
+                                + separator + goodbye),
+                new UiTestCase(
+                        "Reject a non-numeric delete without changing tasks",
+                        "Verify that an invalid delete number is rejected and the existing task remains in the list.",
+                        "todo read book\ndelete one\nlist\nbye\n",
+                        welcome + separator
+                                + "Got it. I've added this task:\n"
+                                + "  [T][ ] read book\n"
+                                + "Now you have 1 tasks in the list.\n"
+                                + separator + separator
+                                + "    'one' is not a valid integer.\n"
+                                + separator + separator
+                                + "1. [T][ ] read book\n"
+                                + separator + goodbye)
         );
 
         for (UiTestCase testCase : cases) {

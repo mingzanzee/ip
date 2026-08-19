@@ -49,6 +49,9 @@ public class Tard_T {
                 case "event":
                     handleEvent(taskList, userInput);
                     break;
+                case "delete":
+                    handleDelete(taskList, userInput);
+                    break;
                 default:
                     printError(new TardTException("'" + taskType + "' is not a valid input.\n"
                     + "Valid input formats: \n"
@@ -58,7 +61,8 @@ public class Tard_T {
                     + "unmark [task number] -> unmarks the task and show their status\n"
                     + "todo [task name] -> adds a todo task to taskList\n"
                     + "deadline [task name] /by [deadline] -> adds a deadline task to taskList\n"
-                    + "event [task name] /from [start time] /to [end time] -> adds an event task to taskList"));
+                    + "event [task name] /from [start time] /to [end time] -> adds an event task to taskList\n"
+                    + "delete [task number] -> deletes a task from taskList"));
             }
 
             System.out.println(LINE);
@@ -85,10 +89,18 @@ public class Tard_T {
     }
 
     public static void handleMark(List<Task> taskList, String userInput) {
+        // check if its only "mark"
+        if (userInput.trim().equals("mark")) {
+            System.out.println("    Missing task number after 'mark'. Use mark [task number].");
+            return;
+        }
+        String rest = userInput.substring(5);
         try {
-            int idx = Integer.parseInt(userInput.substring(5));
+            int idx = Integer.parseInt(rest);
+            // should this be considered a TardTException?
             if (idx > taskList.size()) {
-                System.out.println("Tasklist does not have that many tasks.\n" + LINE);
+                System.out.println("    Tasklist does not have that many tasks.");
+                return;
             }
             Task task = taskList.get(idx - 1);
             task.markAsDone();
@@ -96,22 +108,28 @@ public class Tard_T {
                     "  " + task.toString());
 
         } catch (NumberFormatException e) {
-            System.out.println("'" + userInput + "' is not a valid integer.\n" + LINE);
+            System.out.println("    '" + rest + "' is not a valid integer.\n" + LINE);
         }
     }
 
     public static void handleUnmark(List<Task> taskList, String userInput) {
+        if (userInput.trim().equals("unmark")) {
+            System.out.println("    Missing task number after 'unmark'. Use unmark [task number].");
+            return;
+        }
+        String rest = userInput.substring(7);
         try {
-            int idx = Integer.parseInt(userInput.substring(7));
+            int idx = Integer.parseInt(rest);
             if (idx > taskList.size()) {
-                System.out.println("Tasklist does not have that many tasks.\n" + LINE);
+                System.out.println("    Tasklist does not have that many tasks.");
+                return;
             }
             Task task = taskList.get(idx - 1);
             task.markAsNotDone();
             System.out.println("OK, I've marked this task as not done yet: \n" +
                     "  " + task.toString());
         }  catch (NumberFormatException e) {
-            System.out.println("'" + userInput + "' is not a valid integer.");
+            System.out.println("    '" + rest + "' is not a valid integer.");
         }
     }
 
@@ -195,6 +213,29 @@ public class Tard_T {
             System.out.println("    Now you have " + taskList.size() + " tasks in the list.");
         } catch (TardTException e) {
             printError(e);
+        }
+    }
+
+    public static void handleDelete(List<Task> taskList, String userInput) {
+        // handle lack of space after 'delete'
+        if  (userInput.trim().equals("delete")) {
+            System.out.println("    Missing task number after 'delete'. Use delete [task number].");
+            return;
+        }
+        String rest = userInput.substring(7);
+        try {
+            int idx = Integer.parseInt(rest);
+            if (idx > taskList.size()) {
+                System.out.println("    Tasklist does not have that many tasks.");
+                return;
+            }
+            Task task = taskList.get(idx - 1);
+            taskList.remove(idx - 1);
+            System.out.println("Noted, I've removed this task: \n" +
+                    "  " + task.toString());
+            System.out.println("    Now you have " + taskList.size() + " tasks in the list.");
+        }  catch (NumberFormatException e) {
+            System.out.println("    '" + rest + "' is not a valid integer.");
         }
     }
 
