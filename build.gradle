@@ -1,11 +1,24 @@
 plugins {
     id 'java'
+    id 'application'
+    // Shadow 9.5+ needs Gradle 9.2+, while this project uses Gradle 9.1.
+    id 'com.gradleup.shadow' version '9.4.3'
 }
 
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(25)
     }
+}
+
+application {
+    // Tard_T is in src/main/java without a package declaration, so its fully
+    // qualified class name is simply Tard_T.
+    mainClass = 'Tard_T'
+}
+
+shadowJar {
+    archiveFileName = 'Tard_T.jar'
 }
 
 repositories {
@@ -20,4 +33,10 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+// Allow the interactive Tard_T program to receive commands when started with
+// ./gradlew run.
+tasks.named('run') {
+    standardInput = System.in
 }
