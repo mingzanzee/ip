@@ -9,7 +9,7 @@ import java.util.Scanner;
 public class Tard_T {
     public static final String LINE = "________________________________";
     /** The project-relative file that stores tasks between program runs. */
-    private static final Path SAVE_FILE = Path.of("data", "duke.txt");
+    private static final Path SAVE_FILE = Path.of("data", "tardt.txt");
 
     /** Represents the supported command keywords and an unrecognised input. */
     private enum Command {
@@ -49,7 +49,7 @@ public class Tard_T {
 
         Scanner scanner = new Scanner(System.in);
 
-        List<Task> taskList = new ArrayList<>();
+        List<Task> taskList = loadTasks();
 
         // keep accepting inputs until user types "bye"
         while (true) {
@@ -289,8 +289,7 @@ public class Tard_T {
      * Saves the current task list to the project's data file.
      *
      * <p>Each task is saved as a pipe-separated line containing its type,
-     * completion status, description, and any type-specific details. Loading
-     * this format is intentionally left for a later feature.</p>
+     * completion status, description, and any type-specific details.</p>
      *
      * @param taskList the tasks to write after a successful list change
      */
@@ -324,5 +323,71 @@ public class Tard_T {
                     + event.from + " | " + event.to;
         }
         return "T | " + status + " | " + task.description;
+    }
+
+    /**
+     * Loads saved tasks from the project's data file when the application starts.
+     *
+     * @return the saved tasks, or an empty list when no save file exists
+     */
+    private static List<Task> loadTasks() {
+        List<Task> taskList = new ArrayList<>();
+        if (!Files.exists(SAVE_FILE)) {
+            return taskList;
+        }
+
+        try {
+            for (String savedTask : Files.readAllLines(SAVE_FILE)) {
+                Task task = createTaskFromSavedLine(savedTask);
+                if (task != null) {
+                    taskList.add(task);
+                }
+            }
+        } catch (IOException exception) {
+            System.out.println("Unable to load tasks: " + exception.getMessage());
+        }
+        return taskList;
+    }
+
+    /**
+     * Recreates one task from its pipe-separated on-disk representation.
+     *
+     * @param savedTask one line from the save file
+     * @return the reconstructed task, or {@code null} if the line is not a supported task format
+     */
+    private static Task createTaskFromSavedLine(String savedTask) {
+        String[] parts = savedTask.split("\\s*\\|\\s*", -1);
+        if (parts.length < 3) {
+            return null;
+        }
+
+        Task task;
+        switch (parts[0]) {
+        case "T":
+            if (parts.length != 3) {
+                return null;
+            }
+            task = new ToDo(parts[2]);
+            break;
+        case "D":
+            if (parts.length != 4) {
+                return null;
+            }
+            task = new Deadline(parts[2], parts[3]);
+            break;
+        case "E":
+            if (parts.length != 5) {
+                return null;
+            }
+            task = new Event(parts[2], parts[3], parts[4]);
+            break;
+        default:
+            return null;
+        }
+
+        if (parts[1].equals("1")) {
+            task.markAsDone();
+        }
+        return task;
     }
 }

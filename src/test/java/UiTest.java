@@ -19,7 +19,7 @@ import org.junit.jupiter.api.Test;
  */
 class UiTest {
     /** The project-relative data file used by the application and checked by the save test. */
-    private static final Path SAVE_FILE = Path.of("data", "duke.txt");
+    private static final Path SAVE_FILE = Path.of("data", "tardt.txt");
 
     /** Runs every planned UI case and prints its input and captured output. */
     @Test
@@ -47,6 +47,19 @@ class UiTest {
                                 + "Now you have 1 tasks in the list.\n"
                                 + separator + goodbye,
                         "T | 0 | read book"),
+                new UiTestCase(
+                        "Load saved tasks at startup",
+                        "Verify that tasks from data/tardt.txt are reconstructed and listed when the application starts.",
+                        "list\nbye\n",
+                        welcome + separator
+                                + "1. [T][X] read book\n"
+                                + "2. [D][ ] return book (by: June 6th)\n"
+                                + "3. [E][ ] project meeting (from: Aug 6th 2pm to: 4pm)\n"
+                                + separator + goodbye,
+                        "T | 1 | read book\n"
+                                + "D | 0 | return book | June 6th\n"
+                                + "E | 0 | project meeting | Aug 6th 2pm | 4pm",
+                        null),
                 new UiTestCase(
                         "Reject an unknown command without changing tasks",
                         "Verify that an invalid command is rejected and that the following valid command creates the first task.",
@@ -158,9 +171,16 @@ class UiTest {
                         null)
         );
 
+        boolean saveFileExisted = false;
+        String originalSavedData = null;
         try {
+            saveFileExisted = Files.exists(SAVE_FILE);
+            if (saveFileExisted) {
+                originalSavedData = Files.readString(SAVE_FILE);
+            }
             for (UiTestCase testCase : cases) {
                 deleteSaveFile();
+                writeInitialSavedData(testCase.initialSavedData());
                 String actualOutput = runApplication(testCase.input());
                 printSessionRecord(testCase, actualOutput);
                 assertEquals(testCase.expectedOutput(), actualOutput,
@@ -177,7 +197,7 @@ class UiTest {
         } catch (IOException exception) {
             throw new AssertionError("Unable to inspect the test save file.", exception);
         } finally {
-            deleteSaveFile();
+            restoreSaveFile(saveFileExisted, originalSavedData);
         }
     }
 
@@ -217,8 +237,36 @@ class UiTest {
         }
     }
 
+    /** Writes the test case's initial data so the application can load it at startup. */
+    private void writeInitialSavedData(String initialSavedData) throws IOException {
+        if (initialSavedData == null) {
+            return;
+        }
+        Files.createDirectories(SAVE_FILE.getParent());
+        Files.writeString(SAVE_FILE, initialSavedData);
+    }
+
+    /** Restores any data that existed before the UI test suite ran. */
+    private void restoreSaveFile(boolean saveFileExisted, String originalSavedData) {
+        deleteSaveFile();
+        if (!saveFileExisted) {
+            return;
+        }
+        try {
+            Files.createDirectories(SAVE_FILE.getParent());
+            Files.writeString(SAVE_FILE, originalSavedData);
+        } catch (IOException exception) {
+            throw new AssertionError("Unable to restore the original save file.", exception);
+        }
+    }
+
     /** Stores all information needed to run one planned console UI test. */
     private record UiTestCase(String name, String aim, String input, String expectedOutput,
-                              String expectedSavedData) {
+                              String initialSavedData, String expectedSavedData) {
+        /** Creates a case without pre-existing saved data. */
+        UiTestCase(String name, String aim, String input, String expectedOutput,
+                   String expectedSavedData) {
+            this(name, aim, input, expectedOutput, null, expectedSavedData);
+        }
     }
 }

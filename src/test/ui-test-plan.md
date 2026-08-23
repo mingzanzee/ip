@@ -24,7 +24,7 @@ ________________________________
 
 ## Test case: Save a newly added task
 
-**Aim:** Verify that a successful task addition writes the current task list to `data/duke.txt`.
+**Aim:** Verify that a successful task addition writes the current task list to `data/tardt.txt`.
 
 ### Input
 ```text
@@ -51,6 +51,39 @@ ________________________________
 ### Expected saved data
 ```text
 T | 0 | read book
+```
+
+## Test case: Load saved tasks at startup
+
+**Aim:** Verify that tasks from `data/tardt.txt` are reconstructed and listed when the application starts.
+
+### Initial saved data
+```text
+T | 1 | read book
+D | 0 | return book | June 6th
+E | 0 | project meeting | Aug 6th 2pm | 4pm
+```
+
+### Input
+```text
+list
+bye
+```
+
+### Expected output
+```text
+Hello! I'm Tard_T. 
+What can I do for you? 
+________________________________
+
+________________________________
+1. [T][X] read book
+2. [D][ ] return book (by: June 6th)
+3. [E][ ] project meeting (from: Aug 6th 2pm to: 4pm)
+________________________________
+________________________________
+Bye. Hope to see you again soon!
+________________________________
 ```
 
 ## Test case: Reject an unknown command without changing tasks
