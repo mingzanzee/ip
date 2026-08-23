@@ -2,7 +2,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
@@ -15,6 +18,8 @@ import org.junit.jupiter.api.Test;
  * test session instead of allowing later UI cases to run.</p>
  */
 class UiTest {
+    /** The project-relative data file used by the application and checked by the save test. */
+    private static final Path SAVE_FILE = Path.of("data", "duke.txt");
 
     /** Runs every planned UI case and prints its input and captured output. */
     @Test
@@ -30,7 +35,18 @@ class UiTest {
                         "Exit the application",
                         "Verify that the application shows its welcome message and exits politely when the user enters bye.",
                         "bye\n",
-                        welcome + goodbye),
+                        welcome + goodbye,
+                        null),
+                new UiTestCase(
+                        "Save a newly added task",
+                        "Verify that a successful task addition writes the current task list to data/duke.txt.",
+                        "todo read book\nbye\n",
+                        welcome + separator
+                                + "Got it. I've added this task:\n"
+                                + "  [T][ ] read book\n"
+                                + "Now you have 1 tasks in the list.\n"
+                                + separator + goodbye,
+                        "T | 0 | read book"),
                 new UiTestCase(
                         "Reject an unknown command without changing tasks",
                         "Verify that an invalid command is rejected and that the following valid command creates the first task.",
@@ -52,7 +68,8 @@ class UiTest {
                                 + "Now you have 1 tasks in the list.\n"
                                 + separator + separator
                                 + "1. [T][ ] read book\n"
-                                + separator + goodbye),
+                                + separator + goodbye,
+                        null),
                 new UiTestCase(
                         "Add and list a deadline",
                         "Verify that a valid deadline is stored and displayed with its deadline value.",
@@ -63,7 +80,8 @@ class UiTest {
                                 + "    Now you have 1 tasks in the list.\n"
                                 + separator + separator
                                 + "1. [D][ ] submit assignment (by: Friday)\n"
-                                + separator + goodbye),
+                                + separator + goodbye,
+                        null),
                 new UiTestCase(
                         "Reject a malformed deadline without changing tasks",
                         "Verify that a malformed deadline is rejected and does not add a second task.",
@@ -76,7 +94,8 @@ class UiTest {
                                 + "    Invalid format. Use: deadline [task name] /by [deadline]\n"
                                 + separator + separator
                                 + "1. [T][ ] read book\n"
-                                + separator + goodbye),
+                                + separator + goodbye,
+                        null),
                 new UiTestCase(
                         "Add and list an event",
                         "Verify that a valid event is stored and displayed with its start and end times.",
@@ -87,7 +106,8 @@ class UiTest {
                                 + "    Now you have 1 tasks in the list.\n"
                                 + separator + separator
                                 + "1. [E][ ] lecture (from: 2pm to: 4pm)\n"
-                                + separator + goodbye),
+                                + separator + goodbye,
+                        null),
                 new UiTestCase(
                         "Reject a non-numeric mark without changing task status",
                         "Verify that an invalid mark number is rejected and the existing task remains unmarked.",
@@ -100,7 +120,8 @@ class UiTest {
                                 + "    'one' is not a valid integer.\n"
                                 + separator + separator + separator
                                 + "1. [T][ ] read book\n"
-                                + separator + goodbye),
+                                + separator + goodbye,
+                        null),
                 new UiTestCase(
                         "Delete a task and list the remaining task",
                         "Verify that delete removes the specified task and list renumbers the remaining task.",
@@ -119,7 +140,8 @@ class UiTest {
                                 + "    Now you have 1 tasks in the list.\n"
                                 + separator + separator
                                 + "1. [D][ ] submit assignment (by: Friday)\n"
-                                + separator + goodbye),
+                                + separator + goodbye,
+                        null),
                 new UiTestCase(
                         "Reject a non-numeric delete without changing tasks",
                         "Verify that an invalid delete number is rejected and the existing task remains in the list.",
@@ -132,18 +154,30 @@ class UiTest {
                                 + "    'one' is not a valid integer.\n"
                                 + separator + separator
                                 + "1. [T][ ] read book\n"
-                                + separator + goodbye)
+                                + separator + goodbye,
+                        null)
         );
 
-        for (UiTestCase testCase : cases) {
-            String actualOutput = runApplication(testCase.input());
-            printSessionRecord(testCase, actualOutput);
-            assertEquals(testCase.expectedOutput(), actualOutput,
-                    () -> "UI test failed: " + testCase.name()
-                            + "\nAim: " + testCase.aim()
-                            + "\nConsole input:\n" + testCase.input()
-                            + "\nExpected output:\n" + testCase.expectedOutput()
-                            + "\nActual output:\n" + actualOutput);
+        try {
+            for (UiTestCase testCase : cases) {
+                deleteSaveFile();
+                String actualOutput = runApplication(testCase.input());
+                printSessionRecord(testCase, actualOutput);
+                assertEquals(testCase.expectedOutput(), actualOutput,
+                        () -> "UI test failed: " + testCase.name()
+                                + "\nAim: " + testCase.aim()
+                                + "\nConsole input:\n" + testCase.input()
+                                + "\nExpected output:\n" + testCase.expectedOutput()
+                                + "\nActual output:\n" + actualOutput);
+                if (testCase.expectedSavedData() != null) {
+                    assertEquals(testCase.expectedSavedData(), Files.readString(SAVE_FILE),
+                            () -> "Saved task data did not match after: " + testCase.name());
+                }
+            }
+        } catch (IOException exception) {
+            throw new AssertionError("Unable to inspect the test save file.", exception);
+        } finally {
+            deleteSaveFile();
         }
     }
 
@@ -174,7 +208,17 @@ class UiTest {
                 %s""", testCase.name(), testCase.aim(), testCase.input(), actualOutput);
     }
 
+    /** Deletes the save file so each UI case starts with an isolated file state. */
+    private void deleteSaveFile() {
+        try {
+            Files.deleteIfExists(SAVE_FILE);
+        } catch (IOException exception) {
+            throw new AssertionError("Unable to reset the test save file.", exception);
+        }
+    }
+
     /** Stores all information needed to run one planned console UI test. */
-    private record UiTestCase(String name, String aim, String input, String expectedOutput) {
+    private record UiTestCase(String name, String aim, String input, String expectedOutput,
+                              String expectedSavedData) {
     }
 }

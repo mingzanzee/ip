@@ -1,10 +1,15 @@
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-
+/** Provides the interactive command-line interface for the Tard_T task manager. */
 public class Tard_T {
     public static final String LINE = "________________________________";
+    /** The project-relative file that stores tasks between program runs. */
+    private static final Path SAVE_FILE = Path.of("data", "duke.txt");
 
     /** Represents the supported command keywords and an unrecognised input. */
     private enum Command {
@@ -134,6 +139,7 @@ public class Tard_T {
             }
             Task task = taskList.get(idx - 1);
             task.markAsDone();
+            saveTasks(taskList);
             System.out.println("Nice! I've marked this task as done:\n" +
                     "  " + task.toString());
 
@@ -156,6 +162,7 @@ public class Tard_T {
             }
             Task task = taskList.get(idx - 1);
             task.markAsNotDone();
+            saveTasks(taskList);
             System.out.println("OK, I've marked this task as not done yet: \n" +
                     "  " + task.toString());
         }  catch (NumberFormatException e) {
@@ -173,6 +180,7 @@ public class Tard_T {
             }
             Task newTask = new ToDo(task);
             taskList.add(newTask);
+            saveTasks(taskList);
             System.out.println("Got it. I've added this task:\n  " + newTask.toString()
             + "\nNow you have " + taskList.size() + " tasks in the list.");
         } catch (TardTException e) {
@@ -200,6 +208,7 @@ public class Tard_T {
 
             Task newTask = new Deadline(description, by);
             taskList.add(newTask);
+            saveTasks(taskList);
             System.out.println("    Got it. I've added this task:");
             System.out.println("      " + newTask.toString());
             System.out.println("    Now you have " + taskList.size() + " tasks in the list.");
@@ -238,6 +247,7 @@ public class Tard_T {
 
             Task newTask = new Event(description, from, to);
             taskList.add(newTask);
+            saveTasks(taskList);
             System.out.println("    Got it. I've added this task:");
             System.out.println("      " + newTask.toString());
             System.out.println("    Now you have " + taskList.size() + " tasks in the list.");
@@ -261,6 +271,7 @@ public class Tard_T {
             }
             Task task = taskList.get(idx - 1);
             taskList.remove(idx - 1);
+            saveTasks(taskList);
             System.out.println("Noted, I've removed this task: \n" +
                     "  " + task.toString());
             System.out.println("    Now you have " + taskList.size() + " tasks in the list.");
@@ -272,5 +283,46 @@ public class Tard_T {
     /** Prints the message carried by a user-facing Tard_T exception. */
     private static void printError(TardTException exception) {
         System.out.println(exception.getMessage());
+    }
+
+    /**
+     * Saves the current task list to the project's data file.
+     *
+     * <p>Each task is saved as a pipe-separated line containing its type,
+     * completion status, description, and any type-specific details. Loading
+     * this format is intentionally left for a later feature.</p>
+     *
+     * @param taskList the tasks to write after a successful list change
+     */
+    private static void saveTasks(List<Task> taskList) {
+        List<String> savedTasks = new ArrayList<>();
+        for (Task task : taskList) {
+            savedTasks.add(formatTaskForSaving(task));
+        }
+
+        try {
+            Files.createDirectories(SAVE_FILE.getParent());
+            Files.writeString(SAVE_FILE, String.join(System.lineSeparator(), savedTasks));
+        } catch (IOException exception) {
+            System.out.println("Unable to save tasks: " + exception.getMessage());
+        }
+    }
+
+    /**
+     * Converts one task to its pipe-separated on-disk representation.
+     *
+     * @param task the task to save
+     * @return a line containing the task's type, status, and details
+     */
+    private static String formatTaskForSaving(Task task) {
+        String status = task.isDone ? "1" : "0";
+        if (task instanceof Deadline deadline) {
+            return "D | " + status + " | " + deadline.description + " | " + deadline.by;
+        }
+        if (task instanceof Event event) {
+            return "E | " + status + " | " + event.description + " | "
+                    + event.from + " | " + event.to;
+        }
+        return "T | " + status + " | " + task.description;
     }
 }

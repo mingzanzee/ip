@@ -22,6 +22,37 @@ Bye. Hope to see you again soon!
 ________________________________
 ```
 
+## Test case: Save a newly added task
+
+**Aim:** Verify that a successful task addition writes the current task list to `data/duke.txt`.
+
+### Input
+```text
+todo read book
+bye
+```
+
+### Expected output
+```text
+Hello! I'm Tard_T. 
+What can I do for you? 
+________________________________
+
+________________________________
+Got it. I've added this task:
+  [T][ ] read book
+Now you have 1 tasks in the list.
+________________________________
+________________________________
+Bye. Hope to see you again soon!
+________________________________
+```
+
+### Expected saved data
+```text
+T | 0 | read book
+```
+
 ## Test case: Reject an unknown command without changing tasks
 
 **Aim:** Verify that an invalid command is rejected and that the following valid command creates the first task.
