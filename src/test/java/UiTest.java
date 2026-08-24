@@ -53,12 +53,12 @@ class UiTest {
                         "list\nbye\n",
                         welcome + separator
                                 + "1. [T][X] read book\n"
-                                + "2. [D][ ] return book (by: June 6th)\n"
-                                + "3. [E][ ] project meeting (from: Aug 6th 2pm to: 4pm)\n"
+                                + "2. [D][ ] return book (by: Aug 23 2026 15:00)\n"
+                                + "3. [E][ ] project meeting (from: Oct 20 2026 15:00 to: Oct 20 2026 17:00)\n"
                                 + separator + goodbye,
                         "T | 1 | read book\n"
-                                + "D | 0 | return book | June 6th\n"
-                                + "E | 0 | project meeting | Aug 6th 2pm | 4pm",
+                                + "D | 0 | return book | 2026-08-23T15:00\n"
+                                + "E | 0 | project meeting | 2026-10-20T15:00 | 2026-10-20T17:00",
                         null),
                 new UiTestCase(
                         "Reject an unknown command without changing tasks",
@@ -86,13 +86,13 @@ class UiTest {
                 new UiTestCase(
                         "Add and list a deadline",
                         "Verify that a valid deadline is stored and displayed with its deadline value.",
-                        "deadline submit assignment /by Friday\nlist\nbye\n",
+                        "deadline submit assignment /by 2026-10-20T17:00\nlist\nbye\n",
                         welcome + separator
                                 + "    Got it. I've added this task:\n"
-                                + "      [D][ ] submit assignment (by: Friday)\n"
+                                + "      [D][ ] submit assignment (by: Oct 20 2026 17:00)\n"
                                 + "    Now you have 1 tasks in the list.\n"
                                 + separator + separator
-                                + "1. [D][ ] submit assignment (by: Friday)\n"
+                                + "1. [D][ ] submit assignment (by: Oct 20 2026 17:00)\n"
                                 + separator + goodbye,
                         null),
                 new UiTestCase(
@@ -112,13 +112,13 @@ class UiTest {
                 new UiTestCase(
                         "Add and list an event",
                         "Verify that a valid event is stored and displayed with its start and end times.",
-                        "event lecture /from 2pm /to 4pm\nlist\nbye\n",
+                        "event lecture /from 2026-10-20T15:00 /to 2026-10-20T16:00\nlist\nbye\n",
                         welcome + separator
                                 + "    Got it. I've added this task:\n"
-                                + "      [E][ ] lecture (from: 2pm to: 4pm)\n"
+                                + "      [E][ ] lecture (from: Oct 20 2026 15:00 to: Oct 20 2026 16:00)\n"
                                 + "    Now you have 1 tasks in the list.\n"
                                 + separator + separator
-                                + "1. [E][ ] lecture (from: 2pm to: 4pm)\n"
+                                + "1. [E][ ] lecture (from: Oct 20 2026 15:00 to: Oct 20 2026 16:00)\n"
                                 + separator + goodbye,
                         null),
                 new UiTestCase(
@@ -138,21 +138,21 @@ class UiTest {
                 new UiTestCase(
                         "Delete a task and list the remaining task",
                         "Verify that delete removes the specified task and list renumbers the remaining task.",
-                        "todo read book\ndeadline submit assignment /by Friday\ndelete 1\nlist\nbye\n",
+                        "todo read book\ndeadline submit assignment /by 2026-10-20T17:00\ndelete 1\nlist\nbye\n",
                         welcome + separator
                                 + "Got it. I've added this task:\n"
                                 + "  [T][ ] read book\n"
                                 + "Now you have 1 tasks in the list.\n"
                                 + separator + separator
                                 + "    Got it. I've added this task:\n"
-                                + "      [D][ ] submit assignment (by: Friday)\n"
+                                + "      [D][ ] submit assignment (by: Oct 20 2026 17:00)\n"
                                 + "    Now you have 2 tasks in the list.\n"
                                 + separator + separator
                                 + "Noted, I've removed this task: \n"
                                 + "  [T][ ] read book\n"
                                 + "    Now you have 1 tasks in the list.\n"
                                 + separator + separator
-                                + "1. [D][ ] submit assignment (by: Friday)\n"
+                                + "1. [D][ ] submit assignment (by: Oct 20 2026 17:00)\n"
                                 + separator + goodbye,
                         null),
                 new UiTestCase(
