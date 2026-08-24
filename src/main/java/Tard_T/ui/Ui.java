@@ -1,3 +1,7 @@
+package Tard_T.ui;
+
+import Tard_T.task.Task;
+
 import java.util.List;
 import java.util.Scanner;
 
@@ -7,7 +11,7 @@ public class Ui {
     private final Scanner scanner = new Scanner(System.in);
 
     public void showWelcome() {
-        String intro = "Hello! I'm Tard_T. \n"
+        String intro = "Hello! I'm Tard_T.Tard_T. \n"
                 + "What can I do for you? \n"
                 + LINE + "\n";
         System.out.println(intro);

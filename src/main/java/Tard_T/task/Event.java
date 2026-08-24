@@ -1,7 +1,9 @@
+package Tard_T.task;
+
+import Tard_T.exception.TardTException;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Event extends Task {
     protected LocalDateTime from;
@@ -41,7 +43,14 @@ public class Event extends Task {
         String day = ymd_split[2];
 
         return Month.getShortNameByNumber(month) + " " + day + " " + year + " " + time;
+    }
 
+    public String getFromRaw() {
+        return this.from.toString();
+    }
+
+    public String getToRaw() {
+        return this.to.toString();
     }
 
     @Override

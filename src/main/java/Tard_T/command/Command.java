@@ -1,3 +1,5 @@
+package Tard_T.command;
+
 /** Represents the supported command keywords and an unrecognised input. */
 public enum Command {
     BYE("bye"),
@@ -17,7 +19,7 @@ public enum Command {
     }
 
     /** Returns the command that matches the input keyword, if one exists. */
-    static Command fromKeyword(String keyword) {
+    public static Command fromKeyword(String keyword) {
         for (Command command : values()) {
             if (keyword.equals(command.keyword)) {
                 return command;

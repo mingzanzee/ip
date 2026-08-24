@@ -9,6 +9,7 @@ import java.nio.file.Path;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+import Tard_T.Tard_T;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -24,7 +25,7 @@ class UiTest {
     /** Runs every planned UI case and prints its input and captured output. */
     @Test
     void runsUiTestPlan() {
-        String welcome = "Hello! I'm Tard_T. \n"
+        String welcome = "Hello! I'm Tard_T.Tard_T. \n"
                 + "What can I do for you? \n"
                 + "____________________________________________________________\n\n";
         String separator = "____________________________________________________________\n";
