@@ -19,15 +19,15 @@ import org.junit.jupiter.api.Test;
  */
 class UiTest {
     /** The project-relative data file used by the application and checked by the save test. */
-    private static final Path SAVE_FILE = Path.of("data", "tardt.txt");
+    private static final Path SAVE_FILE = Path.of("data", "tasks.txt");
 
     /** Runs every planned UI case and prints its input and captured output. */
     @Test
     void runsUiTestPlan() {
         String welcome = "Hello! I'm Tard_T. \n"
                 + "What can I do for you? \n"
-                + "________________________________\n\n";
-        String separator = "________________________________\n";
+                + "____________________________________________________________\n\n";
+        String separator = "____________________________________________________________\n";
         String goodbye = separator + "Bye. Hope to see you again soon!\n" + separator;
 
         List<UiTestCase> cases = List.of(
