@@ -362,26 +362,31 @@ public class Tard_T {
         }
 
         Task task;
-        switch (parts[0]) {
-        case "T":
-            if (parts.length != 3) {
-                return null;
+        try {
+            switch (parts[0]) {
+                case "T":
+                    if (parts.length != 3) {
+                        return null;
+                    }
+                    task = new ToDo(parts[2]);
+                    break;
+                case "D":
+                    if (parts.length != 4) {
+                        return null;
+                    }
+                    task = new Deadline(parts[2], parts[3]);
+                    break;
+                case "E":
+                    if (parts.length != 5) {
+                        return null;
+                    }
+                    task = new Event(parts[2], parts[3], parts[4]);
+                    break;
+                default:
+                    return null;
             }
-            task = new ToDo(parts[2]);
-            break;
-        case "D":
-            if (parts.length != 4) {
-                return null;
-            }
-            task = new Deadline(parts[2], parts[3]);
-            break;
-        case "E":
-            if (parts.length != 5) {
-                return null;
-            }
-            task = new Event(parts[2], parts[3], parts[4]);
-            break;
-        default:
+        } catch (TardTException e) {
+            System.out.println("Invalid date/time format in save file");
             return null;
         }
 
