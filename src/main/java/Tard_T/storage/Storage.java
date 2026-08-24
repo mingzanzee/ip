@@ -1,3 +1,11 @@
+package Tard_T.storage;
+
+import Tard_T.task.Deadline;
+import Tard_T.task.Event;
+import Tard_T.task.Task;
+import Tard_T.task.ToDo;
+import Tard_T.exception.TardTException;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -26,15 +34,15 @@ public class Storage {
     }
 
     private String formatTaskForSaving(Task task) {
-        String status = task.isDone ? "1" : "0";
+        String status = task.isDone() ? "1" : "0";
         if (task instanceof Deadline deadline) {
-            return "D | " + status + " | " + deadline.description + " | " + deadline.by;
+            return "D | " + status + " | " + deadline.getDescription() + " | " + deadline.getByRaw();
         }
         if (task instanceof Event event) {
-            return "E | " + status + " | " + event.description + " | "
-                    + event.from + " | " + event.to;
+            return "E | " + status + " | " + event.getDescription() + " | "
+                    + event.getFromRaw() + " | " + event.getToRaw();
         }
-        return "T | " + status + " | " + task.description;
+        return "T | " + status + " | " + task.getDescription();
     }
 
     /** Loads saved tasks from the data file, or an empty list if none exists. */

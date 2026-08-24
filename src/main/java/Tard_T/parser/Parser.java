@@ -1,3 +1,11 @@
+package Tard_T.parser;
+
+import Tard_T.command.Command;
+import Tard_T.exception.TardTException;
+import Tard_T.storage.Storage;
+import Tard_T.task.*;
+import Tard_T.ui.Ui;
+
 public class Parser {
     /** Parses and executes one line of input. Returns true if the app should exit. */
     public static boolean parse(String userInput, TaskList tasks, Ui ui, Storage storage) {

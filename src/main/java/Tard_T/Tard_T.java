@@ -1,8 +1,16 @@
+package Tard_T;
+
+import Tard_T.exception.TardTException;
+import Tard_T.parser.Parser;
+import Tard_T.storage.Storage;
+import Tard_T.task.TaskList;
+import Tard_T.ui.Ui;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 
-/** Provides the interactive command-line interface for the Tard_T task manager. */
+/** Provides the interactive command-line interface for the Tard_T.Tard_T task manager. */
 public class Tard_T {
     private static final Path SAVE_FILE = Paths.get("data", "tasks.txt");
 

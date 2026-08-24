@@ -1,7 +1,9 @@
+package Tard_T.task;
+
+import Tard_T.exception.TardTException;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Deadline extends Task {
     protected LocalDateTime by;
@@ -30,6 +32,10 @@ public class Deadline extends Task {
         String day = ymd_split[2];
 
         return Month.getShortNameByNumber(month) + " " + day + " " + year + " " + time;
+    }
+
+    public String getByRaw() {
+        return this.by.toString();
     }
 
     @Override
