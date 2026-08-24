@@ -1,24 +1,12 @@
 plugins {
     id 'java'
     id 'application'
-    // Shadow 9.5+ needs Gradle 9.2+, while this project uses Gradle 9.1.
-    id 'com.gradleup.shadow' version '9.4.3'
+    id 'com.gradleup.shadow' version '9.5.1'
 }
 
 java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(25)
-    }
-}
-
-application {
-    // Tard_T is in src/main/java without a package declaration, so its fully
-    // qualified class name is simply Tard_T.
-    mainClass = 'Tard_T'
-}
-
-shadowJar {
-    archiveFileName = 'Tard_T.jar'
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
 }
 
 repositories {
@@ -26,17 +14,43 @@ repositories {
 }
 
 dependencies {
-    testImplementation platform('org.junit:junit-bom:5.10.0')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    String jUnitVersion = '5.14.4'
+
+    testImplementation "org.junit.jupiter:junit-jupiter-api:${jUnitVersion}"
+
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${jUnitVersion}"
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.14.4'
 }
 
-tasks.named('test') {
+test {
     useJUnitPlatform()
+
+    testLogging {
+        events 'passed', 'skipped', 'failed'
+
+        showExceptions = true
+        exceptionFormat = 'full'
+        showCauses = true
+        showStackTraces = true
+        showStandardStreams = false
+    }
 }
 
-// Allow the interactive Tard_T program to receive commands when started with
-// ./gradlew run.
-tasks.named('run') {
+application {
+    mainClass = 'seedu.duke.Duke'
+}
+
+jar {
+    // A lean JAR file (i.e., without the dependencies packaged inside) is not needed.
+    enabled = false
+    // Rename its output anyway; Gradle forbids it clashing with the shadowJar output file, even for a disabled task.
+    archiveClassifier = 'without-dependencies'
+}
+
+shadowJar {
+    archiveFileName = 'duke.jar'
+}
+
+run {
     standardInput = System.in
 }
