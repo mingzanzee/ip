@@ -1,5 +1,8 @@
 package Tard_T.task;
 
+/**
+ * An enum class that handles the conversion from a numeric string to its shorthand month String representation.
+ */
 public enum Month {
     JAN("01", "Jan"),
     FEB("02", "Feb"),

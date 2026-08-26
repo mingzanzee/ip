@@ -5,6 +5,9 @@ import Tard_T.exception.TardTException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 
+/**
+ * A type of Task that has a deadline associated with it.
+ */
 public class Deadline extends Task {
     protected LocalDateTime by;
 

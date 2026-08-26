@@ -1,5 +1,8 @@
 package Tard_T.task;
 
+/**
+ * A type of Task that only has a description associated with it.
+ */
 public class ToDo extends Task {
 
     public ToDo(String description) {

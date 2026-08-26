@@ -3,6 +3,9 @@ package Tard_T.task;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A class that manages a collection of Task objects.
+ */
 public class TaskList {
     private final List<Task> tasks;
 

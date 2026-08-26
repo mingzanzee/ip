@@ -45,19 +45,30 @@ public class Ui {
         System.out.println("OK, I've marked this task as not done yet: \n  " + task.toString());
     }
 
-    /** "Added" format used by todo. */
+    /** "Added" format used by todo.
+     *
+     * @param task A Task object.
+     * @param size An integer representing the number of Tasks in the taskList
+     * */
     public void showAdded(Task task, int size) {
         System.out.println("Got it. I've added this task:\n  " + task.toString()
                 + "\nNow you have " + size + " tasks in the list.");
     }
 
-    /** "Added" format used by deadline/event (indented, multi-line). */
+    /** "Added" format used by deadline/event (indented, multi-line).
+     * @param task A Task object.
+     * @param size An integer representing the number of Tasks in the taskList
+     */
     public void showAddedIndented(Task task, int size) {
         System.out.println("    Got it. I've added this task:");
         System.out.println("      " + task.toString());
         System.out.println("    Now you have " + size + " tasks in the list.");
     }
 
+    /** "Deleted" format used by deadline/event (indented, multi-line).
+     * @param task A Task object.
+     * @param size An integer representing the number of Tasks in the taskList
+     */
     public void showDeleted(Task task, int size) {
         System.out.println("Noted, I've removed this task: \n  " + task.toString());
         System.out.println("    Now you have " + size + " tasks in the list.");
