@@ -22,8 +22,9 @@ public class Deadline extends Task {
     }
 
     /**
-     * Returns the deadline as a string in a different format as the expected input
-     * @return A string represent datetime in MMM dd yyyy time
+     * Returns the deadline as a string in a different format as the expected input.
+     *
+     * @return A string represent datetime in MMM dd yyyy time.
      */
     public String getBy() {
         String unparsed = this.by.toString();
@@ -37,6 +38,12 @@ public class Deadline extends Task {
         return Month.getShortNameByNumber(month) + " " + day + " " + year + " " + time;
     }
 
+    /**
+     * Outputs the date-time of Task deadline as a String.
+     * Leaves it in one of the ISO-8601 formats.
+     *
+     * @return The date and time of the deadline of the Task as a String unchanged.
+     */
     public String getByRaw() {
         return this.by.toString();
     }

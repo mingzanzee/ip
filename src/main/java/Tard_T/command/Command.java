@@ -22,7 +22,6 @@ public enum Command {
      * Returns the command that matches the input keyword, if one exists.
      *
      * @param keyword A string representing the input command from the user.
-     *
      * @return A Command object corresponding to the action about to be taken.
      *      INVALID if input command is unrecognisable.
      * */

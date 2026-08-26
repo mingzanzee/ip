@@ -7,7 +7,9 @@ import Tard_T.task.*;
 import Tard_T.ui.Ui;
 
 public class Parser {
-    /** Parses and executes one line of input. Returns true if the app should exit. */
+    /**
+     * Parses and executes one line of input. Returns true if the app should exit.
+     */
     public static boolean parse(String userInput, TaskList tasks, Ui ui, Storage storage) {
         boolean toExit = false;
         String taskType = userInput.split(" ")[0];
@@ -56,6 +58,7 @@ public class Parser {
 
     /**
      * Handle the MARK command.
+     *
      * @param tasks Existing list of tasks as a TaskList object.
      * @param userInput The user input string.
      * @param ui The class in charge of interacting with the user.
@@ -86,6 +89,7 @@ public class Parser {
 
     /**
      * Handle the UNMARK command.
+     *
      * @param tasks Existing list of tasks as a TaskList object.
      * @param userInput The user input string.
      * @param ui The class in charge of interacting with the user.
@@ -116,6 +120,7 @@ public class Parser {
 
     /**
      * Handle the TODO command.
+     *
      * @param tasks Existing list of tasks as a TaskList object.
      * @param userInput The user input string.
      * @param ui The class in charge of interacting with the user.
@@ -139,6 +144,7 @@ public class Parser {
 
     /**
      * Handle the DEADLINE command.
+     *
      * @param tasks Existing list of tasks as a TaskList object.
      * @param userInput The user input string.
      * @param ui The class in charge of interacting with the user.
@@ -170,6 +176,7 @@ public class Parser {
 
     /**
      * Handle the EVENT command.
+     *
      * @param tasks Existing list of tasks as a TaskList object.
      * @param userInput The user input string.
      * @param ui The class in charge of interacting with the user.
@@ -210,6 +217,7 @@ public class Parser {
 
     /**
      * Handle the DELETE command.
+     *
      * @param tasks Existing list of tasks as a TaskList object.
      * @param userInput The user input string.
      * @param ui The class in charge of interacting with the user.

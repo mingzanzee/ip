@@ -10,6 +10,9 @@ public class Ui {
 
     private final Scanner scanner = new Scanner(System.in);
 
+    /**
+     * Shows the welcome message when the application starts.
+     */
     public void showWelcome() {
         String intro = "Hello! I'm Tard_T.Tard_T. \n"
                 + "What can I do for you? \n"
@@ -17,18 +20,34 @@ public class Ui {
         System.out.println(intro);
     }
 
+    /**
+     * Reads the user input.
+     *
+     * @return The latest user input as a String.
+     */
     public String readCommand() {
         return scanner.nextLine();
     }
 
+    /**
+     * Prints a line in standard format in the terminal.
+     */
     public void showLine() {
         System.out.println(LINE);
     }
 
+    /**
+     * Shows a 'bye' message.
+     */
     public void showBye() {
         System.out.println("Bye. Hope to see you again soon!");
     }
 
+    /**
+     * Shows all Tasks, numbered, by printing it in the terminal.
+     *
+     * @param taskList The List of Tasks.
+     */
     public void showTaskList(List<Task> taskList) {
         int num = 1;
         for (Task task : taskList) {
@@ -37,15 +56,26 @@ public class Ui {
         }
     }
 
+    /**
+     * Shows message that acknowledges a Task as marked in the terminal.
+     *
+     * @param task A Task object.
+     */
     public void showMarked(Task task) {
         System.out.println("Nice! I've marked this task as done:\n  " + task.toString());
     }
 
+    /**
+     * Shows message that acknowledges a Task as unmarked in the terminal.
+     *
+     * @param task
+     */
     public void showUnmarked(Task task) {
         System.out.println("OK, I've marked this task as not done yet: \n  " + task.toString());
     }
 
-    /** "Added" format used by todo.
+    /**
+     * "Added" format used by todo.
      *
      * @param task A Task object.
      * @param size An integer representing the number of Tasks in the taskList
@@ -55,7 +85,9 @@ public class Ui {
                 + "\nNow you have " + size + " tasks in the list.");
     }
 
-    /** "Added" format used by deadline/event (indented, multi-line).
+    /**
+     * "Added" format used by deadline/event (indented, multi-line).
+     *
      * @param task A Task object.
      * @param size An integer representing the number of Tasks in the taskList
      */
@@ -65,7 +97,9 @@ public class Ui {
         System.out.println("    Now you have " + size + " tasks in the list.");
     }
 
-    /** "Deleted" format used by deadline/event (indented, multi-line).
+    /**
+     * "Deleted" format used by deadline/event (indented, multi-line).
+     *
      * @param task A Task object.
      * @param size An integer representing the number of Tasks in the taskList
      */
@@ -74,10 +108,18 @@ public class Ui {
         System.out.println("    Now you have " + size + " tasks in the list.");
     }
 
+    /**
+     * Prints the error message in the terminal.
+     *
+     * @param message A String containing the error message.
+     */
     public void showError(String message) {
         System.out.println(message);
     }
 
+    /**
+     * Closes the Scanner object.
+     */
     public void close() {
         scanner.close();
     }
