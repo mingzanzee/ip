@@ -12,8 +12,13 @@ public class Task {
         this.isDone = false;
     }
 
+    /**
+     * Process the status icon of Task depending on whether it is done.
+     * @return "X" if task is done, " " otherwise.
+     */
     public String getStatusIcon() {
-        return (this.isDone ? "X" : " "); // mark done task with X
+        // mark done task with X
+        return (this.isDone ? "X" : " ");
     }
 
     public boolean isDone() {
@@ -24,10 +29,16 @@ public class Task {
         return this.description;
     }
 
+    /**
+     * Marks the Task as done.
+     */
     public void markAsDone() {
         this.isDone = true;
     }
 
+    /**
+     * Marks the Task as not done.
+     */
     public void markAsNotDone() {
         this.isDone = false;
     }

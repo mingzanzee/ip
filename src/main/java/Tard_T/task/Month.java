@@ -25,9 +25,20 @@ public enum Month {
         this.shortName = shortName;
     }
 
-    public String getNumber() { return number; }
-    public String getShortName() { return shortName; }
+    public String getNumber() {
+        return number;
+    }
 
+    public String getShortName() {
+        return shortName;
+    }
+
+    /**
+     * Outputs the short name of a month corresponding to the input number.
+     *
+     * @param number A String from '01' to '12' corresponding to the months of the year.
+     * @return The corresponding short name for that month.
+     */
     public static String getShortNameByNumber(String number) {
         for (Month m : values()) {
             if (m.number.equals(number)) {

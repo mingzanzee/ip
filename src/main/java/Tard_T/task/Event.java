@@ -24,6 +24,12 @@ public class Event extends Task {
         }
     }
 
+    /**
+     * Outputs the start date and time in a more readable format.
+     * For example: Oct 12 2026 12:00
+     *
+     * @return A String in the following form: {shortname of month} {day} {year} {time}.
+     */
     public String getFrom() {
         String unparsed = this.from.toString();
         String ymd = unparsed.split("T")[0];
@@ -36,6 +42,12 @@ public class Event extends Task {
         return Month.getShortNameByNumber(month) + " " + day + " " + year + " " + time;
     }
 
+    /**
+     * Outputs the end date and time in a more readable format.
+     * For example: Oct 12 2026 12:00
+     *
+     * @return A String in the following form: {shortname of month} {day} {year} {time}.
+     */
     public String getTo() {
         String unparsed = this.to.toString();
         String ymd = unparsed.split("T")[0];
@@ -48,10 +60,20 @@ public class Event extends Task {
         return Month.getShortNameByNumber(month) + " " + day + " " + year + " " + time;
     }
 
+    /**
+     * Outputs the start date and time in ISO-8601 format
+     *
+     * @return A String representing date-time in ISO-8601 format.
+     */
     public String getFromRaw() {
         return this.from.toString();
     }
 
+    /**
+     * Outputs the end date and time in ISO-8601 format
+     *
+     * @return A String representing date-time in ISO-8601 format.
+     */
     public String getToRaw() {
         return this.to.toString();
     }

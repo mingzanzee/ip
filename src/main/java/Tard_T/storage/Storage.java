@@ -19,7 +19,9 @@ public class Storage {
         this.saveFile = saveFile;
     }
 
-    /** Saves the current task list to the data file. */
+    /**
+     * Saves the current task list to the data file.
+     */
     public void save(List<Task> taskList) throws TardTException {
         List<String> savedTasks = new ArrayList<>();
         for (Task task : taskList) {
@@ -35,6 +37,7 @@ public class Storage {
 
     /**
      * Formats a task object into a String suitable for saving in the text file.
+     *
      * @param task A Task object
      * @return The formatted string.
      */
@@ -50,7 +53,11 @@ public class Storage {
         return "T | " + status + " | " + task.getDescription();
     }
 
-    /** Loads saved tasks from the data file, or an empty list if none exists. */
+    /**
+     * Loads saved tasks from the data file, or an empty list if none exists.
+     *
+     * @return A List of Tasks read from the data file.
+     */
     public List<Task> load() throws TardTException {
         List<Task> taskList = new ArrayList<>();
         if (!Files.exists(saveFile)) {
@@ -72,6 +79,7 @@ public class Storage {
     /**
      * Inverse method of formatTaskForSaving.
      * Creates a Task object from the String line read from the save file.
+     *
      * @param savedTask A String line read from the save file.
      * @return A Task object
      */
