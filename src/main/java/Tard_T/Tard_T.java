@@ -32,6 +32,9 @@ public class Tard_T {
         tasks = loadedTasks;
     }
 
+    /**
+     * Runs the interactive application
+     */
     public void run() {
         ui.showWelcome();
         boolean isExit = false;

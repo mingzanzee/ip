@@ -54,6 +54,13 @@ public class Parser {
         return toExit;
     }
 
+    /**
+     * Handle the MARK command.
+     * @param tasks Existing list of tasks as a TaskList object.
+     * @param userInput The user input string.
+     * @param ui The class in charge of interacting with the user.
+     * @param storage A Storage object
+     */
     private static void handleMark(TaskList tasks, String userInput, Ui ui, Storage storage) {
         if (userInput.trim().equals("mark")) {
             ui.showError("    Missing task number after 'mark'. Use mark [task number].");
@@ -77,6 +84,13 @@ public class Parser {
         }
     }
 
+    /**
+     * Handle the UNMARK command.
+     * @param tasks Existing list of tasks as a TaskList object.
+     * @param userInput The user input string.
+     * @param ui The class in charge of interacting with the user.
+     * @param storage A Storage object
+     */
     private static void handleUnmark(TaskList tasks, String userInput, Ui ui, Storage storage) {
         if (userInput.trim().equals("unmark")) {
             ui.showError("    Missing task number after 'unmark'. Use unmark [task number].");
@@ -100,6 +114,13 @@ public class Parser {
         }
     }
 
+    /**
+     * Handle the TODO command.
+     * @param tasks Existing list of tasks as a TaskList object.
+     * @param userInput The user input string.
+     * @param ui The class in charge of interacting with the user.
+     * @param storage A Storage object
+     */
     private static void handleTodo(TaskList tasks, String userInput, Ui ui, Storage storage) {
         String description = userInput.substring(5);
         try {
@@ -116,6 +137,13 @@ public class Parser {
         }
     }
 
+    /**
+     * Handle the DEADLINE command.
+     * @param tasks Existing list of tasks as a TaskList object.
+     * @param userInput The user input string.
+     * @param ui The class in charge of interacting with the user.
+     * @param storage A Storage object
+     */
     private static void handleDeadline(TaskList tasks, String userInput, Ui ui, Storage storage) {
         try {
             String rest = userInput.substring(9).trim();
@@ -140,6 +168,13 @@ public class Parser {
         }
     }
 
+    /**
+     * Handle the EVENT command.
+     * @param tasks Existing list of tasks as a TaskList object.
+     * @param userInput The user input string.
+     * @param ui The class in charge of interacting with the user.
+     * @param storage A Storage object
+     */
     private static void handleEvent(TaskList tasks, String userInput, Ui ui, Storage storage) {
         try {
             String rest = userInput.substring(6).trim();
@@ -173,6 +208,13 @@ public class Parser {
         }
     }
 
+    /**
+     * Handle the DELETE command.
+     * @param tasks Existing list of tasks as a TaskList object.
+     * @param userInput The user input string.
+     * @param ui The class in charge of interacting with the user.
+     * @param storage A Storage object
+     */
     private static void handleDelete(TaskList tasks, String userInput, Ui ui, Storage storage) {
         if (userInput.trim().equals("delete")) {
             ui.showError("    Missing task number after 'delete'. Use delete [task number].");

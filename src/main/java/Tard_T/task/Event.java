@@ -5,6 +5,9 @@ import Tard_T.exception.TardTException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 
+/**
+ * A type of Task that has a start and end time associated with it.
+ */
 public class Event extends Task {
     protected LocalDateTime from;
     protected LocalDateTime to;

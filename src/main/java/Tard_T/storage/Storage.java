@@ -33,6 +33,11 @@ public class Storage {
         }
     }
 
+    /**
+     * Formats a task object into a String suitable for saving in the text file.
+     * @param task A Task object
+     * @return The formatted string.
+     */
     private String formatTaskForSaving(Task task) {
         String status = task.isDone() ? "1" : "0";
         if (task instanceof Deadline deadline) {
@@ -64,6 +69,12 @@ public class Storage {
         return taskList;
     }
 
+    /**
+     * Inverse method of formatTaskForSaving.
+     * Creates a Task object from the String line read from the save file.
+     * @param savedTask A String line read from the save file.
+     * @return A Task object
+     */
     private Task createTaskFromSavedLine(String savedTask) {
         String[] parts = savedTask.split("\\s*\\|\\s*", -1);
         if (parts.length < 3) {

@@ -1,5 +1,8 @@
 package Tard_T.task;
 
+/**
+ * Encapsulates the description and status of a task.
+ */
 public class Task {
     protected String description;
     protected boolean isDone;
