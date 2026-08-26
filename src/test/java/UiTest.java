@@ -108,6 +108,7 @@ class UiTest {
                 + "deadline [task name] /by [deadline] -> adds a deadline task to taskList\n"
                 + "event [task name] /from [start time] /to [end time] -> adds an event task to taskList\n"
                 + "delete [task number] -> deletes a task from taskList\n"
+                + "find [search string] -> finds a task consisting of the search string\n"
                 + SEPARATOR + SEPARATOR
                 + "Got it. I've added this task:\n"
                 + "  [T][ ] read book\n"

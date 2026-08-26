@@ -123,4 +123,22 @@ public class Ui {
     public void close() {
         scanner.close();
     }
+
+    /**
+     * Displays the tasks that matched a find command's search string.
+     *
+     * @param matches the tasks whose description contained the search string
+     */
+    public void showFoundTasks(List<Task> matches) {
+        if (matches.isEmpty()) {
+            System.out.println("No matching tasks found.");
+            return;
+        }
+        System.out.println("Here are the matching tasks in your list:");
+        int num = 1;
+        for (Task task : matches) {
+            System.out.println(num + ". " + task.toString());
+            num += 1;
+        }
+    }
 }

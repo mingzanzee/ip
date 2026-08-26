@@ -1,5 +1,8 @@
 package Tard_T.parser;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import Tard_T.command.Command;
 import Tard_T.exception.TardTException;
 import Tard_T.storage.Storage;
@@ -41,6 +44,9 @@ public class Parser {
             case DELETE:
                 handleDelete(tasks, userInput, ui, storage);
                 break;
+            case FIND:
+                handleFind(tasks, userInput, ui, storage);
+                break;
             default:
                 ui.showError("'" + taskType + "' is not a valid input.\n"
                         + "Valid input formats: \n"
@@ -51,7 +57,8 @@ public class Parser {
                         + "todo [task name] -> adds a todo task to taskList\n"
                         + "deadline [task name] /by [deadline] -> adds a deadline task to taskList\n"
                         + "event [task name] /from [start time] /to [end time] -> adds an event task to taskList\n"
-                        + "delete [task number] -> deletes a task from taskList");
+                        + "delete [task number] -> deletes a task from taskList\n"
+                        + "find [search string] -> finds a task consisting of the search string");
         }
         return toExit;
     }
@@ -243,5 +250,36 @@ public class Parser {
         } catch (TardTException e) {
             ui.showError(e.getMessage());
         }
+    }
+
+    /**
+     * Handles the "find" command by searching the task list for tasks whose
+     * description contains the given search string, and displaying any matches.
+     *
+     * @param tasks the current task list to search
+     * @param userInput the full raw user input, expected to start with "find "
+     * @param ui the UI used to display matching tasks or an error message
+     * @param storage unused for find, but accepted for consistency with other handlers
+     */
+    public static void handleFind(TaskList tasks, String userInput, Ui ui, Storage storage) {
+        if (userInput.trim().equals("find")) {
+            ui.showError("    Missing search string after 'find'.");
+            return;
+        }
+
+        String keyword = userInput.substring(5).trim();
+        if (keyword.isEmpty()) {
+            ui.showError("    Missing search string after 'find'.");
+            return;
+        }
+
+        List<Task> matches = new ArrayList<>();
+        for (Task task : tasks.getTasks()) {
+            if (task.getDescription().contains(keyword)) {
+                matches.add(task);
+            }
+        }
+
+        ui.showFoundTasks(matches);
     }
 }
