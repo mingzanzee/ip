@@ -1,12 +1,15 @@
-package Tard_T.ui;
-
-import Tard_T.task.Task;
+package tardt.ui;
 
 import java.util.List;
 import java.util.Scanner;
 
+import tardt.task.Task;
+
+/**
+ * Class that handles interaction with the user.
+ */
 public class Ui {
-    public static final String LINE = "____________________________________________________________"; // match your existing value
+    public static final String LINE = "____________________________________________________________";
 
     private final Scanner scanner = new Scanner(System.in);
 

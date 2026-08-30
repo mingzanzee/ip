@@ -1,4 +1,4 @@
-# Tard_T.Tard_T User Guide
+# tardt.tardt User Guide
 
 // Update the title above to match the actual product name
 

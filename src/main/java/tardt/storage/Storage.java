@@ -1,10 +1,4 @@
-package Tard_T.storage;
-
-import Tard_T.task.Deadline;
-import Tard_T.task.Event;
-import Tard_T.task.Task;
-import Tard_T.task.ToDo;
-import Tard_T.exception.TardTException;
+package tardt.storage;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -12,6 +6,15 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+import tardt.exception.TardTException;
+import tardt.task.Deadline;
+import tardt.task.Event;
+import tardt.task.Task;
+import tardt.task.ToDo;
+
+/**
+ * Constructor for Storage object
+ */
 public class Storage {
     private final Path saveFile;
 
@@ -92,15 +95,21 @@ public class Storage {
         try {
             switch (parts[0]) {
                 case "T":
-                    if (parts.length != 3) return null;
+                    if (parts.length != 3) {
+                        return null;
+                    }
                     task = new ToDo(parts[2]);
                     break;
                 case "D":
-                    if (parts.length != 4) return null;
+                    if (parts.length != 4) {
+                        return null;
+                    }
                     task = new Deadline(parts[2], parts[3]);
                     break;
                 case "E":
-                    if (parts.length != 5) return null;
+                    if (parts.length != 5) {
+                        return null;
+                    }
                     task = new Event(parts[2], parts[3], parts[4]);
                     break;
                 default:

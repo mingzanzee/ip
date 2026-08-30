@@ -1,4 +1,4 @@
-package Tard_T.command;
+package tardt.command;
 
 /** Represents the supported command keywords and an unrecognised input. */
 public enum Command {
