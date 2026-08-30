@@ -1,22 +1,21 @@
-import Tard_T.storage.Storage;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
-import Tard_T.task.Deadline;
-import Tard_T.task.Event;
-import Tard_T.task.Task;
-import Tard_T.task.ToDo;
-import Tard_T.exception.TardTException;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+
+import tardt.exception.TardTException;
+import tardt.storage.Storage;
+import tardt.task.Deadline;
+import tardt.task.Event;
+import tardt.task.Task;
+import tardt.task.ToDo;
 
 public class StorageTest {
 

@@ -1,14 +1,21 @@
-package Tard_T.parser;
+package tardt.parser;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import Tard_T.command.Command;
-import Tard_T.exception.TardTException;
-import Tard_T.storage.Storage;
-import Tard_T.task.*;
-import Tard_T.ui.Ui;
+import tardt.command.Command;
+import tardt.exception.TardTException;
+import tardt.storage.Storage;
+import tardt.task.Deadline;
+import tardt.task.Event;
+import tardt.task.Task;
+import tardt.task.TaskList;
+import tardt.task.ToDo;
+import tardt.ui.Ui;
 
+/**
+ * Class in charge of parsing user inputs.
+ */
 public class Parser {
     /**
      * Parses and executes one line of input. Returns true if the app should exit.
@@ -250,6 +257,7 @@ public class Parser {
         } catch (TardTException e) {
             ui.showError(e.getMessage());
         }
+
     }
 
     /**

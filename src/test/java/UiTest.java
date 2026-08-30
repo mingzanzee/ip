@@ -4,14 +4,15 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.charset.StandardCharsets;
 
-import Tard_T.Tard_T;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import tardt.TardT;
 
 /**
  * Runs the console UI cases described in {@code src/test/ui-test-plan.md}.
@@ -20,7 +21,9 @@ import org.junit.jupiter.api.Test;
  * independently instead of stopping all later cases from running.</p>
  */
 class UiTest {
-    /** The project-relative data file used by the application and checked by the save test. */
+    /**
+     * The project-relative data file used by the application and checked by the save test.
+     */
     private static final Path SAVE_FILE = Path.of("data", "tasks.txt");
 
     private static final String WELCOME = "Hello! I'm Tard_T.Tard_T. \n"
@@ -29,12 +32,18 @@ class UiTest {
     private static final String SEPARATOR = "____________________________________________________________\n";
     private static final String GOODBYE = SEPARATOR + "Bye. Hope to see you again soon!\n" + SEPARATOR;
 
-    /** Whether a save file existed before this test session, so it can be restored afterward. */
+    /**
+     * Whether a save file existed before this test session, so it can be restored afterward.
+     */
     private boolean saveFileExisted;
-    /** The save file's original contents, if any, so they can be restored afterward. */
+    /**
+     * The save file's original contents, if any, so they can be restored afterward.
+     */
     private String originalSavedData;
 
-    /** Records any pre-existing save file, then removes it so each test starts with a clean slate. */
+    /**
+     * Records any pre-existing save file, then removes it so each test starts with a clean slate.
+     */
     @BeforeEach
     void setUp() throws IOException {
         saveFileExisted = Files.exists(SAVE_FILE);
@@ -44,7 +53,9 @@ class UiTest {
         deleteSaveFile();
     }
 
-    /** Restores whatever save file existed (or its absence) before this test session ran. */
+    /**
+     * Restores whatever save file existed (or its absence) before this test session ran.
+     */
     @AfterEach
     void tearDown() {
         restoreSaveFile(saveFileExisted, originalSavedData);
@@ -232,7 +243,9 @@ class UiTest {
         assertEquals(expectedOutput, actualOutput);
     }
 
-    /** Runs the application once with the supplied console input and captures its output. */
+    /**
+     * Runs the application once with the supplied console input and captures its output.
+     */
     private String runApplication(String input) {
         PrintStream originalOutput = System.out;
         java.io.InputStream originalInput = System.in;
@@ -241,7 +254,7 @@ class UiTest {
         try {
             System.setIn(new ByteArrayInputStream(input.getBytes(StandardCharsets.UTF_8)));
             System.setOut(new PrintStream(capturedOutput, true, StandardCharsets.UTF_8));
-            Tard_T.main(new String[0]);
+            TardT.main(new String[0]);
         } finally {
             System.setIn(originalInput);
             System.setOut(originalOutput);
@@ -249,7 +262,9 @@ class UiTest {
         return capturedOutput.toString(StandardCharsets.UTF_8);
     }
 
-    /** Deletes the save file so each test starts with an isolated file state. */
+    /**
+     * Deletes the save file so each test starts with an isolated file state.
+     */
     private void deleteSaveFile() {
         try {
             Files.deleteIfExists(SAVE_FILE);
@@ -258,7 +273,9 @@ class UiTest {
         }
     }
 
-    /** Writes a test's initial data so the application can load it at startup. */
+    /**
+     * Writes a test's initial data so the application can load it at startup.
+     */
     private void writeInitialSavedData(String initialSavedData) throws IOException {
         if (initialSavedData == null) {
             return;
@@ -267,7 +284,9 @@ class UiTest {
         Files.writeString(SAVE_FILE, initialSavedData);
     }
 
-    /** Restores any data that existed before this test ran. */
+    /**
+     * Restores any data that existed before this test ran.
+     */
     private void restoreSaveFile(boolean saveFileExisted, String originalSavedData) {
         deleteSaveFile();
         if (!saveFileExisted) {

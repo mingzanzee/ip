@@ -1,14 +1,15 @@
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import Tard_T.task.Task;
-import org.junit.jupiter.api.Test;
-
 import java.util.ArrayList;
 import java.util.List;
 
-import Tard_T.task.TaskList;
-import Tard_T.task.ToDo;
+import org.junit.jupiter.api.Test;
+
+import tardt.task.Task;
+import tardt.task.TaskList;
+import tardt.task.ToDo;
+
 /**
  * Unit tests for methods in the TaskList class
  */

@@ -1,9 +1,9 @@
-package Tard_T.task;
-
-import Tard_T.exception.TardTException;
+package tardt.task;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
+
+import tardt.exception.TardTException;
 
 /**
  * A type of Task that has a start and end time associated with it.
@@ -12,6 +12,13 @@ public class Event extends Task {
     protected LocalDateTime from;
     protected LocalDateTime to;
 
+    /**
+     * Constructor for Event object
+     * @param description Description of the event task
+     * @param from Start date and time
+     * @param to End date and time
+     * @throws TardTException Unique exception of TardT class
+     */
     public Event(String description, String from, String to) throws TardTException {
         super(description);
 
@@ -34,10 +41,10 @@ public class Event extends Task {
         String unparsed = this.from.toString();
         String ymd = unparsed.split("T")[0];
         String time = unparsed.split("T")[1];
-        String[] ymd_split = ymd.split("-");
-        String year = ymd_split[0];
-        String month = ymd_split[1];
-        String day = ymd_split[2];
+        String[] ymdSplits = ymd.split("-");
+        String year = ymdSplits[0];
+        String month = ymdSplits[1];
+        String day = ymdSplits[2];
 
         return Month.getShortNameByNumber(month) + " " + day + " " + year + " " + time;
     }
@@ -52,10 +59,10 @@ public class Event extends Task {
         String unparsed = this.to.toString();
         String ymd = unparsed.split("T")[0];
         String time = unparsed.split("T")[1];
-        String[] ymd_split = ymd.split("-");
-        String year = ymd_split[0];
-        String month = ymd_split[1];
-        String day = ymd_split[2];
+        String[] ymdSplits = ymd.split("-");
+        String year = ymdSplits[0];
+        String month = ymdSplits[1];
+        String day = ymdSplits[2];
 
         return Month.getShortNameByNumber(month) + " " + day + " " + year + " " + time;
     }

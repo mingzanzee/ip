@@ -1,9 +1,9 @@
-package Tard_T.task;
-
-import Tard_T.exception.TardTException;
+package tardt.task;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
+
+import tardt.exception.TardTException;
 
 /**
  * A type of Task that has a deadline associated with it.
@@ -11,6 +11,12 @@ import java.time.format.DateTimeParseException;
 public class Deadline extends Task {
     protected LocalDateTime by;
 
+    /**
+     * Constructor for Deadline task.
+     * @param description Description for Deadline task.
+     * @param by Deadline of the Deadline task.
+     * @throws TardTException Unique exception of the TardT class
+     */
     public Deadline(String description, String by) throws TardTException {
         super(description);
         try {
@@ -30,10 +36,10 @@ public class Deadline extends Task {
         String unparsed = this.by.toString();
         String ymd = unparsed.split("T")[0];
         String time = unparsed.split("T")[1];
-        String[] ymd_split = ymd.split("-");
-        String year = ymd_split[0];
-        String month = ymd_split[1];
-        String day = ymd_split[2];
+        String[] ymdSplits = ymd.split("-");
+        String year = ymdSplits[0];
+        String month = ymdSplits[1];
+        String day = ymdSplits[2];
 
         return Month.getShortNameByNumber(month) + " " + day + " " + year + " " + time;
     }

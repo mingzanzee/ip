@@ -1,4 +1,4 @@
-package Tard_T.task;
+package tardt.task;
 
 /**
  * A type of Task that only has a description associated with it.
