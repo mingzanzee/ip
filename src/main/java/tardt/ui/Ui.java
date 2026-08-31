@@ -144,4 +144,12 @@ public class Ui {
             num += 1;
         }
     }
+
+    /**
+     * Prints the response message to the terminal. For CLI use.
+     * @param message The response message upon user input.
+     */
+    public void showMessage(String message) {
+        System.out.println(message);
+    }
 }
