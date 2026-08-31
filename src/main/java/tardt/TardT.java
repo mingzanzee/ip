@@ -36,7 +36,34 @@ public class TardT {
     }
 
     /**
-     * Runs the interactive application
+     * Processes a user command and returns the response.
+     * This is the method that the GUI (and CLI) will call.
+     */
+    public String getResponse(String input) {
+        try {
+            return Parser.parseForResponse(input, tasks, storage);
+        } catch (TardTException e) {
+            return e.getMessage();
+        }
+    }
+
+    /**
+     * Saves tasks to storage (useful for GUI shutdown).
+     */
+    public void save() {
+        try {
+            storage.save(tasks.getTasks());
+        } catch (TardTException e) {
+            ui.showError(e.getMessage());
+        }
+    }
+
+    public TaskList getTasks() {
+        return tasks;
+    }
+
+    /**
+     * Run method for CLI
      */
     public void run() {
         ui.showWelcome();
