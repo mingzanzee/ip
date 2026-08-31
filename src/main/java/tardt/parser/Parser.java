@@ -97,8 +97,6 @@ public class Parser {
         }
     }
 
-    // ==================== CORE LOGIC METHODS (Reused by both) ====================
-
     /**
      * Gets the task list as a formatted string.
      *
@@ -144,9 +142,17 @@ public class Parser {
         }
     }
 
-    // ==================== MARK ====================
-
-    private static String handleMarkForResponse(TaskList tasks, String userInput, Storage storage) throws TardTException {
+    /**
+     * Handles the MARK command by marking a task as done.
+     *
+     * @param tasks A list of tasks as a TaskList object.
+     * @param userInput The user input.
+     * @param storage The Storage object.
+     * @return The chatbot's string response.
+     * @throws TardTException A unique exception class for TardT.
+     */
+    private static String handleMarkForResponse(TaskList tasks, String userInput, Storage storage)
+            throws TardTException {
         int idx = parseTaskIndex(userInput, tasks, "mark");
         Task task = tasks.get(idx);
         task.markAsDone();
@@ -154,9 +160,17 @@ public class Parser {
         return "Nice! I've marked this task as done:\n  " + task;
     }
 
-    // ==================== UNMARK ====================
-
-    private static String handleUnmarkForResponse(TaskList tasks, String userInput, Storage storage) throws TardTException {
+    /**
+     * Handles the UNMARK command by marking a task as undone.
+     *
+     * @param tasks A list of tasks as a TaskList object.
+     * @param userInput The user input.
+     * @param storage The Storage object.
+     * @return The chatbot's string response.
+     * @throws TardTException A unique exception class for TardT.
+     */
+    private static String handleUnmarkForResponse(TaskList tasks, String userInput, Storage storage)
+            throws TardTException {
         int idx = parseTaskIndex(userInput, tasks, "unmark");
         Task task = tasks.get(idx);
         task.markAsNotDone();
@@ -164,9 +178,17 @@ public class Parser {
         return "OK, I've marked this task as not done yet:\n  " + task;
     }
 
-    // ==================== TODO ====================
-
-    private static String handleTodoForResponse(TaskList tasks, String userInput, Storage storage) throws TardTException {
+    /**
+     * Handles the TODO command by adding a ToDo Task to taskList.
+     *
+     * @param tasks A list of tasks as a TaskList object.
+     * @param userInput The user input.
+     * @param storage The Storage object.
+     * @return The chatbot's string response.
+     * @throws TardTException A unique exception class for TardT.
+     */
+    private static String handleTodoForResponse(TaskList tasks, String userInput, Storage storage)
+            throws TardTException {
         String description = userInput.substring(5).trim();
         if (description.isEmpty()) {
             throw new TardTException("Invalid format: Description of todo cannot be empty. Use: todo [task name]");
@@ -177,9 +199,17 @@ public class Parser {
         return "Got it. I've added this task:\n  " + newTask + "\nNow you have " + tasks.size() + " tasks in the list.";
     }
 
-    // ==================== DEADLINE ====================
-
-    private static String handleDeadlineForResponse(TaskList tasks, String userInput, Storage storage) throws TardTException {
+    /**
+     * Handles the DEADLINE command by adding a Deadline Task to taskList.
+     *
+     * @param tasks A list of tasks as a TaskList object.
+     * @param userInput The user input.
+     * @param storage The Storage object.
+     * @return The chatbot's string response.
+     * @throws TardTException A unique exception class for TardT.
+     */
+    private static String handleDeadlineForResponse(TaskList tasks, String userInput, Storage storage)
+            throws TardTException {
         String rest = userInput.substring(9).trim();
         int byIndex = rest.indexOf(" /by ");
         if (byIndex == -1) {
@@ -199,9 +229,17 @@ public class Parser {
         return "Got it. I've added this task:\n  " + newTask + "\nNow you have " + tasks.size() + " tasks in the list.";
     }
 
-    // ==================== EVENT ====================
-
-    private static String handleEventForResponse(TaskList tasks, String userInput, Storage storage) throws TardTException {
+    /**
+     * Handles the EVENT command by adding an Event Task to taskList.
+     *
+     * @param tasks A list of tasks as a TaskList object.
+     * @param userInput The user input.
+     * @param storage The Storage object.
+     * @return The chatbot's string response.
+     * @throws TardTException A unique exception class for TardT.
+     */
+    private static String handleEventForResponse(TaskList tasks, String userInput, Storage storage)
+            throws TardTException {
         String rest = userInput.substring(6).trim();
         int fromIndex = rest.indexOf(" /from ");
         if (fromIndex == -1) {
@@ -230,18 +268,34 @@ public class Parser {
         return "Got it. I've added this task:\n  " + newTask + "\nNow you have " + tasks.size() + " tasks in the list.";
     }
 
-    // ==================== DELETE ====================
-
-    private static String handleDeleteForResponse(TaskList tasks, String userInput, Storage storage) throws TardTException {
+    /**
+     * Handles the DELETE command by removing a Task from taskList.
+     *
+     * @param tasks A list of tasks as a TaskList object.
+     * @param userInput The user input.
+     * @param storage The Storage object.
+     * @return The chatbot's string response.
+     * @throws TardTException A unique exception class for TardT.
+     */
+    private static String handleDeleteForResponse(TaskList tasks, String userInput, Storage storage)
+            throws TardTException {
         int idx = parseTaskIndex(userInput, tasks, "delete");
         Task task = tasks.delete(idx);
         storage.save(tasks.getTasks());
         return "Noted. I've removed this task:\n  " + task + "\nNow you have " + tasks.size() + " tasks in the list.";
     }
 
-    // ==================== FIND ====================
-
-    private static String handleFindForResponse(TaskList tasks, String userInput, Storage storage) throws TardTException {
+    /**
+     * Handles the FIND command by filtering the Tasks matching the input.
+     *
+     * @param tasks A list of tasks as a TaskList object.
+     * @param userInput The user input.
+     * @param storage The Storage object.
+     * @return The chatbot's string response.
+     * @throws TardTException A unique exception class for TardT.
+     */
+    private static String handleFindForResponse(TaskList tasks, String userInput, Storage storage)
+            throws TardTException {
         String trimmed = userInput.trim();
         if (trimmed.equals("find")) {
             throw new TardTException("Missing search string after 'find'.");
@@ -268,71 +322,5 @@ public class Parser {
             sb.append("  ").append(i + 1).append(". ").append(matches.get(i)).append("\n");
         }
         return sb.toString();
-    }
-
-    // ==================== CLI HANDLERS (Keep for backward compatibility) ====================
-
-    // Can potentially be removed
-    private static void handleMark(TaskList tasks, String userInput, Ui ui, Storage storage) {
-        try {
-            String response = handleMarkForResponse(tasks, userInput, storage);
-            ui.showMessage(response);
-        } catch (TardTException e) {
-            ui.showError(e.getMessage());
-        }
-    }
-
-    private static void handleUnmark(TaskList tasks, String userInput, Ui ui, Storage storage) {
-        try {
-            String response = handleUnmarkForResponse(tasks, userInput, storage);
-            ui.showMessage(response);
-        } catch (TardTException e) {
-            ui.showError(e.getMessage());
-        }
-    }
-
-    private static void handleTodo(TaskList tasks, String userInput, Ui ui, Storage storage) {
-        try {
-            String response = handleTodoForResponse(tasks, userInput, storage);
-            ui.showMessage(response);
-        } catch (TardTException e) {
-            ui.showError(e.getMessage());
-        }
-    }
-
-    private static void handleDeadline(TaskList tasks, String userInput, Ui ui, Storage storage) {
-        try {
-            String response = handleDeadlineForResponse(tasks, userInput, storage);
-            ui.showMessage(response);
-        } catch (TardTException e) {
-            ui.showError(e.getMessage());
-        }
-    }
-
-    private static void handleEvent(TaskList tasks, String userInput, Ui ui, Storage storage) {
-        try {
-            String response = handleEventForResponse(tasks, userInput, storage);
-            ui.showMessage(response);
-        } catch (TardTException e) {
-            ui.showError(e.getMessage());
-        }
-    }
-
-    private static void handleDelete(TaskList tasks, String userInput, Ui ui, Storage storage) {
-        try {
-            String response = handleDeleteForResponse(tasks, userInput, storage);
-            ui.showMessage(response);
-        } catch (TardTException e) {
-            ui.showError(e.getMessage());
-        }
-    }
-
-    private static void handleFind(TaskList tasks, String userInput, Ui ui, Storage storage) {
-        try {
-            String response = handleFindForResponse(tasks, userInput, storage);
-            ui.showMessage(response);
-        } catch (TardTException e) {
-            ui.showError(e.getMessage());
-        }
     }
 }
