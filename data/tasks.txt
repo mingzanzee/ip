@@ -1,5 +1,4 @@
-D | 1 | hw | 2026-08-30T17:00
-T | 1 | shower
-T | 0 | eat
+T | 0 | shower
+T | 1 | eat
 D | 0 | ps1 | 2026-09-12T15:00
-T | 0 | do increment
+T | 1 | do increment

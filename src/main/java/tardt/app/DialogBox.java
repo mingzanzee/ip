@@ -2,6 +2,7 @@ package tardt.app;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.concurrent.ThreadLocalRandom;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -36,6 +37,8 @@ public class DialogBox extends HBox {
 
         dialog.setText(text);
         displayPicture.setImage(img);
+        // Give each message a softly coloured segment while keeping the palette consistent.
+        getStyleClass().add("dialog-colour-" + ThreadLocalRandom.current().nextInt(1, 6));
     }
 
     /**
@@ -58,4 +61,3 @@ public class DialogBox extends HBox {
         return db;
     }
 }
-
