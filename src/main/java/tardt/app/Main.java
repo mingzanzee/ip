@@ -10,7 +10,7 @@ import javafx.stage.Stage;
 import tardt.TardT;
 
 /**
- * A GUI for Duke using FXML.
+ * A GUI for TardT using FXML.
  */
 public class Main extends Application {
 

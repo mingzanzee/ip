@@ -2,3 +2,4 @@ T | 0 | shower
 T | 1 | eat
 D | 0 | ps1 | 2026-09-12T15:00
 T | 1 | do increment
+D | 0 | hw | 2029-08-11T12:00

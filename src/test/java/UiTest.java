@@ -26,7 +26,7 @@ class UiTest {
      */
     private static final Path SAVE_FILE = Path.of("data", "tasks.txt");
 
-    private static final String WELCOME = "Hello! I'm Tard_T.Tard_T. \n"
+    private static final String WELCOME = "Hello! I'm Tard_T. \n"
             + "What can I do for you? \n"
             + "____________________________________________________________\n\n";
     private static final String SEPARATOR = "____________________________________________________________\n";

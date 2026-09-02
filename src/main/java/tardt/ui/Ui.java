@@ -17,7 +17,7 @@ public class Ui {
      * Shows the welcome message when the application starts.
      */
     public void showWelcome() {
-        String intro = "Hello! I'm Tard_T.Tard_T. \n"
+        String intro = "Hello! I'm Tard_T. \n"
                 + "What can I do for you? \n"
                 + LINE + "\n";
         System.out.println(intro);

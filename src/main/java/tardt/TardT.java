@@ -10,7 +10,7 @@ import tardt.task.TaskList;
 import tardt.ui.Ui;
 
 
-/** Provides the interactive command-line interface for the Tard_T.Tard_T task manager. */
+/** Provides the interactive command-line interface for the Tard_T task manager. */
 public class TardT {
     private static final Path SAVE_FILE = Paths.get("data", "tasks.txt");
 

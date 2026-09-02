@@ -12,6 +12,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import tardt.TardT;
+import tardt.ui.Ui;
 
 /**
  * Controller for the main GUI.
@@ -39,6 +40,13 @@ public class MainWindow extends AnchorPane {
     /** Injects the TardT instance */
     public void setTardT(TardT t) {
         tardT = t;
+        dialogContainer.getChildren().add(
+                DialogBox.getTardTDialog(
+                        "Hello! I'm Tard_T. \n"
+                                + "What can I do for you?",
+                        tardTImage
+                )
+        );
     }
 
     /**
@@ -77,6 +85,5 @@ public class MainWindow extends AnchorPane {
         timeline.play();
     }
 }
-
 
 
