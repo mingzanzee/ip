@@ -35,7 +35,7 @@ public class DialogBox extends HBox {
             e.printStackTrace();
         }
 
-        dialog.setText(text);
+        dialog.setText(text.stripTrailing());
         displayPicture.setImage(img);
         // Give each message a softly coloured segment while keeping the palette consistent.
         getStyleClass().add("dialog-colour-" + ThreadLocalRandom.current().nextInt(1, 6));

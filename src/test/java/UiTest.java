@@ -28,7 +28,7 @@ class UiTest {
 
     private static final String WELCOME = "Hello! I'm Tard_T. \n"
             + "What can I do for you? \n"
-            + "____________________________________________________________\n\n";
+            + "____________________________________________________________\n";
     private static final String SEPARATOR = "____________________________________________________________\n";
     private static final String GOODBYE = SEPARATOR + "Bye. Hope to see you again soon!\n" + SEPARATOR;
 
@@ -137,9 +137,9 @@ class UiTest {
     void deadline_addValidDeadline_isStoredAndListedWithDeadlineValue() {
         String input = "deadline submit assignment /by 2026-10-20T17:00\nlist\nbye\n";
         String expectedOutput = WELCOME + SEPARATOR
-                + "    Got it. I've added this task:\n"
-                + "      [D][ ] submit assignment (by: Oct 20 2026 17:00)\n"
-                + "    Now you have 1 tasks in the list.\n"
+                + "Got it. I've added this task:\n"
+                + "  [D][ ] submit assignment (by: Oct 20 2026 17:00)\n"
+                + "Now you have 1 tasks in the list.\n"
                 + SEPARATOR + SEPARATOR
                 + "1. [D][ ] submit assignment (by: Oct 20 2026 17:00)\n"
                 + SEPARATOR + GOODBYE;
@@ -157,7 +157,7 @@ class UiTest {
                 + "  [T][ ] read book\n"
                 + "Now you have 1 tasks in the list.\n"
                 + SEPARATOR + SEPARATOR
-                + "    Invalid format. Use: deadline [task name] /by [deadline]\n"
+                + "Invalid format. Use: deadline [task name] /by [deadline]\n"
                 + SEPARATOR + SEPARATOR
                 + "1. [T][ ] read book\n"
                 + SEPARATOR + GOODBYE;
@@ -171,9 +171,9 @@ class UiTest {
     void event_addValidEvent_isStoredAndListedWithStartAndEndTimes() {
         String input = "event lecture /from 2026-10-20T15:00 /to 2026-10-20T16:00\nlist\nbye\n";
         String expectedOutput = WELCOME + SEPARATOR
-                + "    Got it. I've added this task:\n"
-                + "      [E][ ] lecture (from: Oct 20 2026 15:00 to: Oct 20 2026 16:00)\n"
-                + "    Now you have 1 tasks in the list.\n"
+                + "Got it. I've added this task:\n"
+                + "  [E][ ] lecture (from: Oct 20 2026 15:00 to: Oct 20 2026 16:00)\n"
+                + "Now you have 1 tasks in the list.\n"
                 + SEPARATOR + SEPARATOR
                 + "1. [E][ ] lecture (from: Oct 20 2026 15:00 to: Oct 20 2026 16:00)\n"
                 + SEPARATOR + GOODBYE;
@@ -191,8 +191,8 @@ class UiTest {
                 + "  [T][ ] read book\n"
                 + "Now you have 1 tasks in the list.\n"
                 + SEPARATOR + SEPARATOR
-                + "    'one' is not a valid integer.\n"
-                + SEPARATOR + SEPARATOR + SEPARATOR
+                + "'one' is not a valid integer.\n"
+                + SEPARATOR + SEPARATOR
                 + "1. [T][ ] read book\n"
                 + SEPARATOR + GOODBYE;
 
@@ -209,13 +209,13 @@ class UiTest {
                 + "  [T][ ] read book\n"
                 + "Now you have 1 tasks in the list.\n"
                 + SEPARATOR + SEPARATOR
-                + "    Got it. I've added this task:\n"
-                + "      [D][ ] submit assignment (by: Oct 20 2026 17:00)\n"
-                + "    Now you have 2 tasks in the list.\n"
+                + "Got it. I've added this task:\n"
+                + "  [D][ ] submit assignment (by: Oct 20 2026 17:00)\n"
+                + "Now you have 2 tasks in the list.\n"
                 + SEPARATOR + SEPARATOR
-                + "Noted, I've removed this task: \n"
+                + "Noted. I've removed this task:\n"
                 + "  [T][ ] read book\n"
-                + "    Now you have 1 tasks in the list.\n"
+                + "Now you have 1 tasks in the list.\n"
                 + SEPARATOR + SEPARATOR
                 + "1. [D][ ] submit assignment (by: Oct 20 2026 17:00)\n"
                 + SEPARATOR + GOODBYE;
@@ -233,7 +233,7 @@ class UiTest {
                 + "  [T][ ] read book\n"
                 + "Now you have 1 tasks in the list.\n"
                 + SEPARATOR + SEPARATOR
-                + "    'one' is not a valid integer.\n"
+                + "'one' is not a valid integer.\n"
                 + SEPARATOR + SEPARATOR
                 + "1. [T][ ] read book\n"
                 + SEPARATOR + GOODBYE;

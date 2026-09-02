@@ -19,7 +19,7 @@ public class Ui {
     public void showWelcome() {
         String intro = "Hello! I'm Tard_T. \n"
                 + "What can I do for you? \n"
-                + LINE + "\n";
+                + LINE;
         System.out.println(intro);
     }
 
@@ -117,7 +117,7 @@ public class Ui {
      * @param message A String containing the error message.
      */
     public void showError(String message) {
-        System.out.println(message);
+        System.out.println(message.stripTrailing());
     }
 
     /**
@@ -150,6 +150,6 @@ public class Ui {
      * @param message The response message upon user input.
      */
     public void showMessage(String message) {
-        System.out.println(message);
+        System.out.println(message.stripTrailing());
     }
 }
