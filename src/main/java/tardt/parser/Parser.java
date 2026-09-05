@@ -1,6 +1,5 @@
 package tardt.parser;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import tardt.command.Command;
@@ -306,12 +305,9 @@ public class Parser {
             throw new TardTException("Missing search string after 'find'.");
         }
 
-        List<Task> matches = new ArrayList<>();
-        for (Task task : tasks.getTasks()) {
-            if (task.getDescription().contains(keyword)) {
-                matches.add(task);
-            }
-        }
+        List<Task> matches = tasks.getTasks().stream()
+                .filter(task -> task.getDescription().contains(keyword))
+                .toList();
 
         if (matches.isEmpty()) {
             return "No tasks found matching: " + keyword;
