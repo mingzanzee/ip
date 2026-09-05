@@ -58,6 +58,9 @@ public class Parser {
      * @throws TardTException If an error occurs during parsing
      */
     public static String parseForResponse(String userInput, TaskList tasks, Storage storage) throws TardTException {
+        assert userInput != null : "The parser must receive a user input string";
+        assert tasks != null : "The parser must receive the application's task list";
+        assert storage != null : "The parser must receive storage for mutating commands";
         String[] parts = userInput.split(" ");
         String taskType = parts[0];
         Command command = Command.fromKeyword(taskType);
@@ -153,6 +156,7 @@ public class Parser {
     private static String handleMarkForResponse(TaskList tasks, String userInput, Storage storage)
             throws TardTException {
         int idx = parseTaskIndex(userInput, tasks, "mark");
+        assert idx >= 0 && idx < tasks.size() : "parseTaskIndex must return a valid task index";
         Task task = tasks.get(idx);
         task.markAsDone();
         storage.save(tasks.getTasks());
@@ -171,6 +175,7 @@ public class Parser {
     private static String handleUnmarkForResponse(TaskList tasks, String userInput, Storage storage)
             throws TardTException {
         int idx = parseTaskIndex(userInput, tasks, "unmark");
+        assert idx >= 0 && idx < tasks.size() : "parseTaskIndex must return a valid task index";
         Task task = tasks.get(idx);
         task.markAsNotDone();
         storage.save(tasks.getTasks());
@@ -192,8 +197,12 @@ public class Parser {
         if (description.isEmpty()) {
             throw new TardTException("Invalid format: Description of todo cannot be empty. Use: todo [task name]");
         }
+
+        // If everything is ok (description present), add ToDo to taskList
         Task newTask = new ToDo(description);
+        int oldSize = tasks.size();
         tasks.add(newTask);
+        assert tasks.size() == oldSize + 1 : "A successful todo command must add one task";
         storage.save(tasks.getTasks());
         return "Got it. I've added this task:\n  " + newTask + "\nNow you have " + tasks.size() + " tasks in the list.";
     }
@@ -210,20 +219,27 @@ public class Parser {
     private static String handleDeadlineForResponse(TaskList tasks, String userInput, Storage storage)
             throws TardTException {
         String rest = userInput.substring(9).trim();
+
         int byIndex = rest.indexOf(" /by ");
         if (byIndex == -1) {
             throw new TardTException("Invalid format. Use: deadline [task name] /by [deadline]");
         }
+
         String description = rest.substring(0, byIndex).trim();
         String by = rest.substring(byIndex + 5).trim();
+
         if (description.isEmpty()) {
             throw new TardTException("Please provide a task description.");
         }
         if (by.isEmpty()) {
             throw new TardTException("Please provide a deadline.");
         }
+
+        // If everything is ok, add a new Deadline to taskList
         Task newTask = new Deadline(description, by);
+        int oldSize = tasks.size();
         tasks.add(newTask);
+        assert tasks.size() == oldSize + 1 : "A successful deadline command must add one task";
         storage.save(tasks.getTasks());
         return "Got it. I've added this task:\n  " + newTask + "\nNow you have " + tasks.size() + " tasks in the list.";
     }
@@ -240,18 +256,23 @@ public class Parser {
     private static String handleEventForResponse(TaskList tasks, String userInput, Storage storage)
             throws TardTException {
         String rest = userInput.substring(6).trim();
+
         int fromIndex = rest.indexOf(" /from ");
         if (fromIndex == -1) {
             throw new TardTException("Invalid format. Use: event [task name] /from [start] /to [end]");
         }
+
         String description = rest.substring(0, fromIndex).trim();
         String afterDesc = rest.substring(fromIndex + 7).trim();
+
         int toIndex = afterDesc.indexOf(" /to ");
         if (toIndex == -1) {
             throw new TardTException("Invalid format. Use: event [task name] /from [start] /to [end]");
         }
+
         String from = afterDesc.substring(0, toIndex).trim();
         String to = afterDesc.substring(toIndex + 5).trim();
+
         if (description.isEmpty()) {
             throw new TardTException("Please provide a task description.");
         }
@@ -261,8 +282,12 @@ public class Parser {
         if (to.isEmpty()) {
             throw new TardTException("Please provide an end time.");
         }
+
+        // If everything is ok, create a new Event and add to taskList
         Task newTask = new Event(description, from, to);
+        int oldSize = tasks.size();
         tasks.add(newTask);
+        assert tasks.size() == oldSize + 1 : "A successful event command must add one task";
         storage.save(tasks.getTasks());
         return "Got it. I've added this task:\n  " + newTask + "\nNow you have " + tasks.size() + " tasks in the list.";
     }
@@ -279,7 +304,10 @@ public class Parser {
     private static String handleDeleteForResponse(TaskList tasks, String userInput, Storage storage)
             throws TardTException {
         int idx = parseTaskIndex(userInput, tasks, "delete");
+        assert idx >= 0 && idx < tasks.size() : "parseTaskIndex must return a valid task index";
+        int oldSize = tasks.size();
         Task task = tasks.delete(idx);
+        assert tasks.size() == oldSize - 1 : "A successful delete command must remove one task";
         storage.save(tasks.getTasks());
         return "Noted. I've removed this task:\n  " + task + "\nNow you have " + tasks.size() + " tasks in the list.";
     }
