@@ -10,6 +10,7 @@ public class TaskList {
     private final List<Task> tasks;
 
     public TaskList(List<Task> tasks) {
+        assert tasks != null : "A TaskList must wrap a non-null task collection";
         this.tasks = tasks;
     }
 
@@ -23,7 +24,10 @@ public class TaskList {
      * @param task
      */
     public void add(Task task) {
+        assert task != null : "A TaskList must not contain null tasks";
+        int oldSize = tasks.size();
         tasks.add(task);
+        assert tasks.size() == oldSize + 1 : "Adding a task must increase the list size by one";
     }
 
     /**

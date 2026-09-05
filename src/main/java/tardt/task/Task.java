@@ -12,6 +12,7 @@ public class Task {
      * @param description Description of the task
      */
     public Task(String description) {
+        assert description != null : "A task must have a description";
         this.description = description;
         this.isDone = false;
     }
@@ -52,4 +53,3 @@ public class Task {
         return "[" + getStatusIcon() + "] " + this.description;
     }
 }
-
