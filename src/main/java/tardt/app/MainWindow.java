@@ -12,7 +12,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import tardt.TardT;
-import tardt.ui.Ui;
 
 /**
  * Controller for the main GUI.
@@ -85,5 +84,4 @@ public class MainWindow extends AnchorPane {
         timeline.play();
     }
 }
-
 
