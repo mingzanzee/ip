@@ -76,7 +76,7 @@ class UiTest {
         String input = "todo read book\nbye\n";
         String expectedOutput = WELCOME + SEPARATOR
                 + "Got it. I've added this task:\n"
-                + "  [T][ ] read book\n"
+                + "  [T][ ] read book | Priority: LOW\n"
                 + "Now you have 1 tasks in the list.\n"
                 + SEPARATOR + GOODBYE;
         String expectedSavedData = "T | 0 | read book";
@@ -94,9 +94,9 @@ class UiTest {
                 + "E | 0 | project meeting | 2026-10-20T15:00 | 2026-10-20T17:00";
         String input = "list\nbye\n";
         String expectedOutput = WELCOME + SEPARATOR
-                + "1. [T][X] read book\n"
-                + "2. [D][ ] return book (by: Aug 23 2026 15:00)\n"
-                + "3. [E][ ] project meeting (from: Oct 20 2026 15:00 to: Oct 20 2026 17:00)\n"
+                + "1. [T][X] read book | Priority: LOW\n"
+                + "2. [D][ ] return book | Priority: LOW (by: Aug 23 2026 15:00)\n"
+                + "3. [E][ ] project meeting | Priority: LOW (from: Oct 20 2026 15:00 to: Oct 20 2026 17:00)\n"
                 + SEPARATOR + GOODBYE;
 
         writeInitialSavedData(initialSavedData);
@@ -115,17 +115,17 @@ class UiTest {
                 + "list -> lists all the tasks and their status\n"
                 + "mark [task number] -> marks the task and show their status\n"
                 + "unmark [task number] -> unmarks the task and show their status\n"
-                + "todo [task name] -> adds a todo task to taskList\n"
-                + "deadline [task name] /by [deadline] -> adds a deadline task to taskList\n"
-                + "event [task name] /from [start time] /to [end time] -> adds an event task to taskList\n"
+                + "todo [task name] [/priority low|medium|high] -> adds a todo task to taskList\n"
+                + "deadline [task name] /by [deadline] [/priority low|medium|high] -> adds a deadline task to taskList\n"
+                + "event [task name] /from [start time] /to [end time] [/priority low|medium|high] -> adds an event task to taskList\n"
                 + "delete [task number] -> deletes a task from taskList\n"
                 + "find [search string] -> finds a task consisting of the search string\n"
                 + SEPARATOR + SEPARATOR
                 + "Got it. I've added this task:\n"
-                + "  [T][ ] read book\n"
+                + "  [T][ ] read book | Priority: LOW\n"
                 + "Now you have 1 tasks in the list.\n"
                 + SEPARATOR + SEPARATOR
-                + "1. [T][ ] read book\n"
+                + "1. [T][ ] read book | Priority: LOW\n"
                 + SEPARATOR + GOODBYE;
 
         String actualOutput = runApplication(input);
@@ -138,10 +138,10 @@ class UiTest {
         String input = "deadline submit assignment /by 2026-10-20T17:00\nlist\nbye\n";
         String expectedOutput = WELCOME + SEPARATOR
                 + "Got it. I've added this task:\n"
-                + "  [D][ ] submit assignment (by: Oct 20 2026 17:00)\n"
+                + "  [D][ ] submit assignment | Priority: LOW (by: Oct 20 2026 17:00)\n"
                 + "Now you have 1 tasks in the list.\n"
                 + SEPARATOR + SEPARATOR
-                + "1. [D][ ] submit assignment (by: Oct 20 2026 17:00)\n"
+                + "1. [D][ ] submit assignment | Priority: LOW (by: Oct 20 2026 17:00)\n"
                 + SEPARATOR + GOODBYE;
 
         String actualOutput = runApplication(input);
@@ -154,12 +154,12 @@ class UiTest {
         String input = "todo read book\ndeadline submit assignment\nlist\nbye\n";
         String expectedOutput = WELCOME + SEPARATOR
                 + "Got it. I've added this task:\n"
-                + "  [T][ ] read book\n"
+                + "  [T][ ] read book | Priority: LOW\n"
                 + "Now you have 1 tasks in the list.\n"
                 + SEPARATOR + SEPARATOR
-                + "Invalid format. Use: deadline [task name] /by [deadline]\n"
+                + "Invalid format. Use: deadline [task name] /by [deadline] [/priority low|medium|high]\n"
                 + SEPARATOR + SEPARATOR
-                + "1. [T][ ] read book\n"
+                + "1. [T][ ] read book | Priority: LOW\n"
                 + SEPARATOR + GOODBYE;
 
         String actualOutput = runApplication(input);
@@ -172,10 +172,10 @@ class UiTest {
         String input = "event lecture /from 2026-10-20T15:00 /to 2026-10-20T16:00\nlist\nbye\n";
         String expectedOutput = WELCOME + SEPARATOR
                 + "Got it. I've added this task:\n"
-                + "  [E][ ] lecture (from: Oct 20 2026 15:00 to: Oct 20 2026 16:00)\n"
+                + "  [E][ ] lecture | Priority: LOW (from: Oct 20 2026 15:00 to: Oct 20 2026 16:00)\n"
                 + "Now you have 1 tasks in the list.\n"
                 + SEPARATOR + SEPARATOR
-                + "1. [E][ ] lecture (from: Oct 20 2026 15:00 to: Oct 20 2026 16:00)\n"
+                + "1. [E][ ] lecture | Priority: LOW (from: Oct 20 2026 15:00 to: Oct 20 2026 16:00)\n"
                 + SEPARATOR + GOODBYE;
 
         String actualOutput = runApplication(input);
@@ -188,12 +188,12 @@ class UiTest {
         String input = "todo read book\nmark one\nlist\nbye\n";
         String expectedOutput = WELCOME + SEPARATOR
                 + "Got it. I've added this task:\n"
-                + "  [T][ ] read book\n"
+                + "  [T][ ] read book | Priority: LOW\n"
                 + "Now you have 1 tasks in the list.\n"
                 + SEPARATOR + SEPARATOR
                 + "'one' is not a valid integer.\n"
                 + SEPARATOR + SEPARATOR
-                + "1. [T][ ] read book\n"
+                + "1. [T][ ] read book | Priority: LOW\n"
                 + SEPARATOR + GOODBYE;
 
         String actualOutput = runApplication(input);
@@ -206,18 +206,18 @@ class UiTest {
         String input = "todo read book\ndeadline submit assignment /by 2026-10-20T17:00\ndelete 1\nlist\nbye\n";
         String expectedOutput = WELCOME + SEPARATOR
                 + "Got it. I've added this task:\n"
-                + "  [T][ ] read book\n"
+                + "  [T][ ] read book | Priority: LOW\n"
                 + "Now you have 1 tasks in the list.\n"
                 + SEPARATOR + SEPARATOR
                 + "Got it. I've added this task:\n"
-                + "  [D][ ] submit assignment (by: Oct 20 2026 17:00)\n"
+                + "  [D][ ] submit assignment | Priority: LOW (by: Oct 20 2026 17:00)\n"
                 + "Now you have 2 tasks in the list.\n"
                 + SEPARATOR + SEPARATOR
                 + "Noted. I've removed this task:\n"
-                + "  [T][ ] read book\n"
+                + "  [T][ ] read book | Priority: LOW\n"
                 + "Now you have 1 tasks in the list.\n"
                 + SEPARATOR + SEPARATOR
-                + "1. [D][ ] submit assignment (by: Oct 20 2026 17:00)\n"
+                + "1. [D][ ] submit assignment | Priority: LOW (by: Oct 20 2026 17:00)\n"
                 + SEPARATOR + GOODBYE;
 
         String actualOutput = runApplication(input);
@@ -230,12 +230,12 @@ class UiTest {
         String input = "todo read book\ndelete one\nlist\nbye\n";
         String expectedOutput = WELCOME + SEPARATOR
                 + "Got it. I've added this task:\n"
-                + "  [T][ ] read book\n"
+                + "  [T][ ] read book | Priority: LOW\n"
                 + "Now you have 1 tasks in the list.\n"
                 + SEPARATOR + SEPARATOR
                 + "'one' is not a valid integer.\n"
                 + SEPARATOR + SEPARATOR
-                + "1. [T][ ] read book\n"
+                + "1. [T][ ] read book | Priority: LOW\n"
                 + SEPARATOR + GOODBYE;
 
         String actualOutput = runApplication(input);

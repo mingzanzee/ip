@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import tardt.exception.TardTException;
+import tardt.priority.Priority;
 import tardt.task.Deadline;
 import tardt.task.Event;
 import tardt.task.Task;
@@ -46,14 +47,18 @@ public class Storage {
      */
     private String formatTaskForSaving(Task task) {
         String status = task.isDone() ? "1" : "0";
+        String priority = task.getPriority().getKeyword();
         if (task instanceof Deadline deadline) {
-            return "D | " + status + " | " + deadline.getDescription() + " | " + deadline.getByRaw();
+            String saved = "D | " + status + " | " + deadline.getDescription() + " | " + deadline.getByRaw();
+            return task.getPriority() == Priority.LOW ? saved : saved + " | " + priority;
         }
         if (task instanceof Event event) {
-            return "E | " + status + " | " + event.getDescription() + " | "
+            String saved = "E | " + status + " | " + event.getDescription() + " | "
                     + event.getFromRaw() + " | " + event.getToRaw();
+            return task.getPriority() == Priority.LOW ? saved : saved + " | " + priority;
         }
-        return "T | " + status + " | " + task.getDescription();
+        String saved = "T | " + status + " | " + task.getDescription();
+        return task.getPriority() == Priority.LOW ? saved : saved + " | " + priority;
     }
 
     /**
@@ -93,24 +98,34 @@ public class Storage {
         }
         Task task;
         try {
+            Priority priority = Priority.LOW;
+            boolean hasPriority = (parts[0].equals("T") && parts.length == 4)
+                    || (parts[0].equals("D") && parts.length == 5)
+                    || (parts[0].equals("E") && parts.length == 6);
+            if (hasPriority) {
+                priority = Priority.fromKeyword(parts[parts.length - 1]);
+                if (priority == null) {
+                    return null;
+                }
+            }
             switch (parts[0]) {
                 case "T":
-                    if (parts.length != 3) {
+                    if (parts.length != 3 && parts.length != 4) {
                         return null;
                     }
-                    task = new ToDo(parts[2]);
+                    task = new ToDo(parts[2], priority);
                     break;
                 case "D":
-                    if (parts.length != 4) {
+                    if (parts.length != 4 && parts.length != 5) {
                         return null;
                     }
-                    task = new Deadline(parts[2], parts[3]);
+                    task = new Deadline(parts[2], parts[3], priority);
                     break;
                 case "E":
-                    if (parts.length != 5) {
+                    if (parts.length != 5 && parts.length != 6) {
                         return null;
                     }
-                    task = new Event(parts[2], parts[3], parts[4]);
+                    task = new Event(parts[2], parts[3], parts[4], priority);
                     break;
                 default:
                     return null;

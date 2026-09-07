@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 
 import tardt.exception.TardTException;
+import tardt.priority.Priority;
 
 /**
  * A type of Task that has a start and end time associated with it.
@@ -27,6 +28,17 @@ public class Event extends Task {
             this.to = LocalDateTime.parse(to);
         } catch (DateTimeParseException e) {
             // Try alternative formats or throw a custom exception
+            throw new TardTException("Invalid date/time format. Use yyyy-MM-ddTHH:mm:ss");
+        }
+    }
+
+    /** Creates an event task with the given priority. */
+    public Event(String description, String from, String to, Priority priority) throws TardTException {
+        super(description, priority);
+        try {
+            this.from = LocalDateTime.parse(from);
+            this.to = LocalDateTime.parse(to);
+        } catch (DateTimeParseException e) {
             throw new TardTException("Invalid date/time format. Use yyyy-MM-ddTHH:mm:ss");
         }
     }

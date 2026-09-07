@@ -4,6 +4,7 @@ import java.util.List;
 
 import tardt.command.Command;
 import tardt.exception.TardTException;
+import tardt.priority.Priority;
 import tardt.storage.Storage;
 import tardt.task.Deadline;
 import tardt.task.Event;
@@ -91,9 +92,9 @@ public class Parser {
                         + "list -> lists all the tasks and their status\n"
                         + "mark [task number] -> marks the task and show their status\n"
                         + "unmark [task number] -> unmarks the task and show their status\n"
-                        + "todo [task name] -> adds a todo task to taskList\n"
-                        + "deadline [task name] /by [deadline] -> adds a deadline task to taskList\n"
-                        + "event [task name] /from [start time] /to [end time] -> adds an event task to taskList\n"
+                        + "todo [task name] [/priority low|medium|high] -> adds a todo task to taskList\n"
+                        + "deadline [task name] /by [deadline] [/priority low|medium|high] -> adds a deadline task to taskList\n"
+                        + "event [task name] /from [start time] /to [end time] [/priority low|medium|high] -> adds an event task to taskList\n"
                         + "delete [task number] -> deletes a task from taskList\n"
                         + "find [search string] -> finds a task consisting of the search string");
         }
@@ -183,6 +184,29 @@ public class Parser {
     }
 
     /**
+     * Parses the input string while checking for a /priority flag
+     * @param input The input string
+     * @return A ParsedPriority object encapsulating Task description and Priority value
+     * @throws TardTException
+     */
+    private static ParsedPriority parsePriority(String input) throws TardTException {
+        String marker = " /priority ";
+        int index = input.lastIndexOf(marker);
+        if (index == -1) {
+            return new ParsedPriority(input, Priority.LOW);
+        }
+        String text = input.substring(0, index).trim();
+        String keyword = input.substring(index + marker.length()).trim();
+        Priority priority = Priority.fromKeyword(keyword);
+        if (text.isEmpty() || priority == null) {
+            throw new TardTException("Invalid priority. Use /priority low, /priority medium, or /priority high.");
+        }
+        return new ParsedPriority(text, priority);
+    }
+
+    private record ParsedPriority(String text, Priority priority) { }
+
+    /**
      * Handles the TODO command by adding a ToDo Task to taskList.
      *
      * @param tasks A list of tasks as a TaskList object.
@@ -193,13 +217,15 @@ public class Parser {
      */
     private static String handleTodoForResponse(TaskList tasks, String userInput, Storage storage)
             throws TardTException {
-        String description = userInput.substring(5).trim();
+        ParsedPriority parsed = parsePriority(userInput.substring(5).trim());
+        String description = parsed.text();
         if (description.isEmpty()) {
-            throw new TardTException("Invalid format: Description of todo cannot be empty. Use: todo [task name]");
+            throw new TardTException("Invalid format: Description of todo cannot be empty. Use: todo [task name]"
+                    + " [/priority low|medium|high]");
         }
 
         // If everything is ok (description present), add ToDo to taskList
-        Task newTask = new ToDo(description);
+        Task newTask = new ToDo(description, parsed.priority());
         int oldSize = tasks.size();
         tasks.add(newTask);
         assert tasks.size() == oldSize + 1 : "A successful todo command must add one task";
@@ -218,11 +244,13 @@ public class Parser {
      */
     private static String handleDeadlineForResponse(TaskList tasks, String userInput, Storage storage)
             throws TardTException {
-        String rest = userInput.substring(9).trim();
+        ParsedPriority parsed = parsePriority(userInput.substring(9).trim());
+        String rest = parsed.text();
 
         int byIndex = rest.indexOf(" /by ");
         if (byIndex == -1) {
-            throw new TardTException("Invalid format. Use: deadline [task name] /by [deadline]");
+            throw new TardTException("Invalid format. Use: deadline [task name] /by [deadline]"
+                    + " [/priority low|medium|high]");
         }
 
         String description = rest.substring(0, byIndex).trim();
@@ -236,7 +264,7 @@ public class Parser {
         }
 
         // If everything is ok, add a new Deadline to taskList
-        Task newTask = new Deadline(description, by);
+        Task newTask = new Deadline(description, by, parsed.priority());
         int oldSize = tasks.size();
         tasks.add(newTask);
         assert tasks.size() == oldSize + 1 : "A successful deadline command must add one task";
@@ -255,11 +283,13 @@ public class Parser {
      */
     private static String handleEventForResponse(TaskList tasks, String userInput, Storage storage)
             throws TardTException {
-        String rest = userInput.substring(6).trim();
+        ParsedPriority parsed = parsePriority(userInput.substring(6).trim());
+        String rest = parsed.text();
 
         int fromIndex = rest.indexOf(" /from ");
         if (fromIndex == -1) {
-            throw new TardTException("Invalid format. Use: event [task name] /from [start] /to [end]");
+            throw new TardTException("Invalid format. Use: event [task name] /from [start] /to [end]"
+                    + " [/priority low|medium|high]");
         }
 
         String description = rest.substring(0, fromIndex).trim();
@@ -267,7 +297,8 @@ public class Parser {
 
         int toIndex = afterDesc.indexOf(" /to ");
         if (toIndex == -1) {
-            throw new TardTException("Invalid format. Use: event [task name] /from [start] /to [end]");
+            throw new TardTException("Invalid format. Use: event [task name] /from [start] /to [end]"
+                    + " [/priority low|medium|high]");
         }
 
         String from = afterDesc.substring(0, toIndex).trim();
@@ -284,7 +315,7 @@ public class Parser {
         }
 
         // If everything is ok, create a new Event and add to taskList
-        Task newTask = new Event(description, from, to);
+        Task newTask = new Event(description, from, to, parsed.priority());
         int oldSize = tasks.size();
         tasks.add(newTask);
         assert tasks.size() == oldSize + 1 : "A successful event command must add one task";
