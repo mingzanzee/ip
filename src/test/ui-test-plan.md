@@ -111,9 +111,9 @@ bye -> exits the interface
 list -> lists all the tasks and their status
 mark [task number] -> marks the task and show their status
 unmark [task number] -> unmarks the task and show their status
-todo [task name] -> adds a todo task to taskList
-deadline [task name] /by [deadline] -> adds a deadline task to taskList
-event [task name] /from [start time] /to [end time] -> adds an event task to taskList
+todo [task name] [/priority low|medium|high] -> adds a todo task to taskList
+deadline [task name] /by [deadline] [/priority low|medium|high] -> adds a deadline task to taskList
+event [task name] /from [start time] /to [end time] [/priority low|medium|high] -> adds an event task to taskList
 delete [task number] -> deletes a task from taskList
 ________________________________
 ________________________________
@@ -259,7 +259,7 @@ Got it. I've added this task:
 Now you have 1 tasks in the list.
 ________________________________
 ________________________________
-    Invalid format. Use: deadline [task name] /by [deadline]
+    Invalid format. Use: deadline [task name] /by [deadline] [/priority low|medium|high]
 ________________________________
 ________________________________
 1. [T][ ] read book

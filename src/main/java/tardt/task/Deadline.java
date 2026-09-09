@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 
 import tardt.exception.TardTException;
+import tardt.priority.Priority;
 
 /**
  * A type of Task that has a deadline associated with it.
@@ -23,6 +24,16 @@ public class Deadline extends Task {
             this.by = LocalDateTime.parse(by);
         } catch (DateTimeParseException e) {
             // Try alternative formats or throw a custom exception
+            throw new TardTException("Invalid date/time format. Use yyyy-MM-ddTHH:mm:ss");
+        }
+    }
+
+    /** Creates a deadline task with the given priority. */
+    public Deadline(String description, String by, Priority priority) throws TardTException {
+        super(description, priority);
+        try {
+            this.by = LocalDateTime.parse(by);
+        } catch (DateTimeParseException e) {
             throw new TardTException("Invalid date/time format. Use yyyy-MM-ddTHH:mm:ss");
         }
     }
