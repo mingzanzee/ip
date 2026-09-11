@@ -77,6 +77,37 @@ shadowJar {
     archiveFileName = 'Tard_T.jar'
 }
 
+/**
+ * Builds a native installer/application image for the operating system on
+ * which Gradle is running. jpackage includes a private Java runtime, while
+ * the shadow JAR remains the cross-platform artifact for users who already
+ * have Java 25 installed.
+ *
+ * Run with: ./gradlew packageApp
+ * Build this task separately on macOS, Windows, and Linux for a release.
+ */
+tasks.register('packageApp', Exec) {
+    dependsOn shadowJar
+
+    def packageDirectory = layout.buildDirectory.dir('jpackage').get().asFile
+    doFirst {
+        packageDirectory.mkdirs()
+    }
+
+    def os = org.gradle.internal.os.OperatingSystem.current()
+    def type = os.isMacOsX() ? 'dmg' : (os.isWindows() ? 'msi' : 'deb')
+
+    commandLine 'jpackage',
+            '--type', type,
+            '--name', 'TardT',
+            '--dest', packageDirectory.absolutePath,
+            '--input', shadowJar.destinationDirectory.get().asFile.absolutePath,
+            '--main-jar', shadowJar.archiveFileName.get(),
+            '--main-class', application.mainClass.get(),
+            '--app-version', '1.0.0',
+            '--vendor', 'TardT'
+}
+
 run {
     standardInput = System.in
 }
