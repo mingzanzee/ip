@@ -115,9 +115,12 @@ class UiTest {
                 + "list -> lists all the tasks and their status\n"
                 + "mark [task number] -> marks the task and show their status\n"
                 + "unmark [task number] -> unmarks the task and show their status\n"
-                + "todo [task name] [/priority low|medium|high] -> adds a todo task to taskList\n"
-                + "deadline [task name] /by [deadline] [/priority low|medium|high] -> adds a deadline task to taskList\n"
-                + "event [task name] /from [start time] /to [end time] [/priority low|medium|high] -> adds an event task to taskList\n"
+                + "Priority is optional; omit it to use low priority.\n"
+                + "todo [task name] (optional: /priority low|medium|high) -> adds a todo task to taskList\n"
+                + "deadline [task name] /by [deadline] (optional: /priority low|medium|high)"
+                + " -> adds a deadline task to taskList\n"
+                + "event [task name] /from [start time] /to [end time] (optional: /priority low|medium|high)"
+                + " -> adds an event task to taskList\n"
                 + "delete [task number] -> deletes a task from taskList\n"
                 + "find [search string] -> finds a task consisting of the search string\n"
                 + SEPARATOR + SEPARATOR
@@ -157,7 +160,8 @@ class UiTest {
                 + "  [T][ ] read book | Priority: LOW\n"
                 + "Now you have 1 tasks in the list.\n"
                 + SEPARATOR + SEPARATOR
-                + "Invalid format. Use: deadline [task name] /by [deadline] [/priority low|medium|high]\n"
+                + "Invalid format. Use: deadline [task name] /by [deadline]"
+                + " (optional: /priority low|medium|high).\n"
                 + SEPARATOR + SEPARATOR
                 + "1. [T][ ] read book | Priority: LOW\n"
                 + SEPARATOR + GOODBYE;
@@ -236,6 +240,49 @@ class UiTest {
                 + "'one' is not a valid integer.\n"
                 + SEPARATOR + SEPARATOR
                 + "1. [T][ ] read book | Priority: LOW\n"
+                + SEPARATOR + GOODBYE;
+
+        String actualOutput = runApplication(input);
+
+        assertEquals(expectedOutput, actualOutput);
+    }
+
+    @Test
+    void blankCommand_isRejected_andApplicationContinues() {
+        String input = "\nlist\nbye\n";
+        String expectedOutput = WELCOME + SEPARATOR
+                + "Please enter a command.\n"
+                + SEPARATOR + SEPARATOR
+                + "Your task list is empty!\n"
+                + SEPARATOR + GOODBYE;
+
+        String actualOutput = runApplication(input);
+
+        assertEquals(expectedOutput, actualOutput);
+    }
+
+    @Test
+    void todo_invalidPriority_isRejectedWithoutAddingTask() {
+        String input = "todo /priority urgent\nlist\nbye\n";
+        String expectedOutput = WELCOME + SEPARATOR
+                + "Invalid priority. Priority is optional; when included, use /priority low, /priority medium,"
+                + " or /priority high.\n"
+                + SEPARATOR + SEPARATOR
+                + "Your task list is empty!\n"
+                + SEPARATOR + GOODBYE;
+
+        String actualOutput = runApplication(input);
+
+        assertEquals(expectedOutput, actualOutput);
+    }
+
+    @Test
+    void event_endBeforeStart_isRejectedWithoutAddingTask() {
+        String input = "event workshop /from 2026-10-20T16:00 /to 2026-10-20T15:00\nlist\nbye\n";
+        String expectedOutput = WELCOME + SEPARATOR
+                + "Event end time must be after its start time.\n"
+                + SEPARATOR + SEPARATOR
+                + "Your task list is empty!\n"
                 + SEPARATOR + GOODBYE;
 
         String actualOutput = runApplication(input);

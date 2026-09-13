@@ -8,18 +8,16 @@ import tardt.priority.Priority;
  * Encapsulates the description and status of a task.
  */
 public class Task {
-    protected String description;
-    protected boolean isDone;
-    protected Priority priority = LOW;
+    private final String description;
+    private boolean isDone;
+    private final Priority priority;
 
     /**
      * Constructor for Task object
      * @param description Description of the task
      */
     public Task(String description) {
-        assert description != null : "A task must have a description";
-        this.description = description;
-        this.isDone = false;
+        this(description, LOW);
     }
 
     /**
@@ -27,8 +25,8 @@ public class Task {
      */
     public Task(String description, Priority priority) {
         assert description != null : "A task must have a description";
+        assert priority != null : "A task must have a priority";
         this.description = description;
-        this.isDone = false;
         this.priority = priority;
     }
 
@@ -37,12 +35,11 @@ public class Task {
      * @return "X" if task is done, " " otherwise.
      */
     public String getStatusIcon() {
-        // mark done task with X
-        return (this.isDone ? "X" : " ");
+        return isDone ? "X" : " ";
     }
 
     public boolean isDone() {
-        return this.isDone;
+        return isDone;
     }
 
     public Priority getPriority() {
@@ -50,25 +47,25 @@ public class Task {
     }
 
     public String getDescription() {
-        return this.description;
+        return description;
     }
 
     /**
      * Marks the Task as done.
      */
     public void markAsDone() {
-        this.isDone = true;
+        isDone = true;
     }
 
     /**
      * Marks the Task as not done.
      */
     public void markAsNotDone() {
-        this.isDone = false;
+        isDone = false;
     }
 
     @Override
     public String toString() {
-        return "[" + getStatusIcon() + "] " + this.description + " | Priority: " + this.priority;
+        return "[" + getStatusIcon() + "] " + description + " | Priority: " + priority;
     }
 }

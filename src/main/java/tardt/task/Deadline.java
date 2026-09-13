@@ -1,7 +1,9 @@
 package tardt.task;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Locale;
 
 import tardt.exception.TardTException;
 import tardt.priority.Priority;
@@ -10,7 +12,12 @@ import tardt.priority.Priority;
  * A type of Task that has a deadline associated with it.
  */
 public class Deadline extends Task {
-    protected LocalDateTime by;
+    private static final DateTimeFormatter DISPLAY_FORMAT = DateTimeFormatter.ofPattern("MMM dd uuuu HH:mm",
+            Locale.ENGLISH);
+    private static final String DATE_TIME_FORMAT_ERROR = "Invalid date/time format. Use yyyy-MM-ddTHH:mm "
+            + "(for example, 2026-09-29T12:00).";
+
+    private final LocalDateTime by;
 
     /**
      * Constructor for Deadline task.
@@ -23,8 +30,7 @@ public class Deadline extends Task {
         try {
             this.by = LocalDateTime.parse(by);
         } catch (DateTimeParseException e) {
-            // Try alternative formats or throw a custom exception
-            throw new TardTException("Invalid date/time format. Use yyyy-MM-ddTHH:mm:ss");
+            throw new TardTException(DATE_TIME_FORMAT_ERROR);
         }
     }
 
@@ -34,7 +40,7 @@ public class Deadline extends Task {
         try {
             this.by = LocalDateTime.parse(by);
         } catch (DateTimeParseException e) {
-            throw new TardTException("Invalid date/time format. Use yyyy-MM-ddTHH:mm:ss");
+            throw new TardTException(DATE_TIME_FORMAT_ERROR);
         }
     }
 
@@ -44,15 +50,7 @@ public class Deadline extends Task {
      * @return A string represent datetime in MMM dd yyyy time.
      */
     public String getBy() {
-        String unparsed = this.by.toString();
-        String ymd = unparsed.split("T")[0];
-        String time = unparsed.split("T")[1];
-        String[] ymdSplits = ymd.split("-");
-        String year = ymdSplits[0];
-        String month = ymdSplits[1];
-        String day = ymdSplits[2];
-
-        return Month.getShortNameByNumber(month) + " " + day + " " + year + " " + time;
+        return by.format(DISPLAY_FORMAT);
     }
 
     /**
@@ -62,7 +60,7 @@ public class Deadline extends Task {
      * @return The date and time of the deadline of the Task as a String unchanged.
      */
     public String getByRaw() {
-        return this.by.toString();
+        return by.toString();
     }
 
     @Override

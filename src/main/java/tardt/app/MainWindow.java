@@ -3,7 +3,6 @@ package tardt.app;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
@@ -19,7 +18,9 @@ import tardt.TardT;
 /**
  * Controller for the main GUI.
  */
-public class MainWindow extends AnchorPane {
+public class MainWindow {
+    private static final int DIALOG_COLOUR_COUNT = 5;
+
     /** The visible root pane loaded from the main-window FXML file. */
     @FXML
     private AnchorPane rootPane;
@@ -29,8 +30,6 @@ public class MainWindow extends AnchorPane {
     private VBox dialogContainer;
     @FXML
     private TextField userInput;
-    @FXML
-    private Button sendButton;
     @FXML
     private ToggleButton darkModeToggle;
     @FXML
@@ -43,8 +42,8 @@ public class MainWindow extends AnchorPane {
     /** The next palette colour used for a dialog, cycling from 1 through 5. */
     private int nextDialogColour = 1;
 
-    private Image userImage = new Image(this.getClass().getResourceAsStream("/images/DaUser.png"));
-    private Image tardTImage = new Image(this.getClass().getResourceAsStream("/images/DaTardT.png"));
+    private final Image userImage = new Image(getClass().getResourceAsStream("/images/DaUser.png"));
+    private final Image tardTImage = new Image(getClass().getResourceAsStream("/images/DaTardT.png"));
 
     /**
      * Configures scrolling and applies the initial font-size setting after FXML has injected the controls.
@@ -86,18 +85,15 @@ public class MainWindow extends AnchorPane {
         );
         userInput.clear();
 
-        // Check if the response is a goodbye message
         if (response.equals("Bye. Hope to see you again soon!")) {
-            closeAppWithDelay(dialogContainer);
+            closeAppWithDelay();
         }
     }
 
     /**
-     * Closes the app when goodbye message is triggered after 500ms.
-     * @param dialogContainer The VBox object.
+     * Closes the app after its goodbye message has been visible briefly.
      */
-    private void closeAppWithDelay(VBox dialogContainer) {
-        // Wait 500ms to show the goodbye message
+    private void closeAppWithDelay() {
         Timeline timeline = new Timeline(new KeyFrame(
                 Duration.millis(500),
                 e -> {
@@ -128,7 +124,7 @@ public class MainWindow extends AnchorPane {
      */
     private int getNextDialogColour() {
         int currentColour = nextDialogColour;
-        nextDialogColour = nextDialogColour == 5 ? 1 : nextDialogColour + 1;
+        nextDialogColour = nextDialogColour == DIALOG_COLOUR_COUNT ? 1 : nextDialogColour + 1;
         return currentColour;
     }
 

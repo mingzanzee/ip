@@ -2,6 +2,87 @@
 
 The executable JUnit tests are in `src/test/java/UiTest.java`. The cases alternate between valid and invalid flows. Each invalid flow follows or precedes a valid action and then runs `list`, which verifies that invalid input does not add or mutate a task.
 
+## Test case: Reject a blank command and continue
+
+**Aim:** Verify that an empty command receives a helpful response and does not stop the application.
+
+### Input
+```text
+
+list
+bye
+```
+
+### Expected output
+```text
+Hello! I'm Tard_T.
+What can I do for you?
+____________________________________________________________
+
+____________________________________________________________
+Please enter a command.
+____________________________________________________________
+____________________________________________________________
+Your task list is empty!
+____________________________________________________________
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+## Test case: Reject an invalid priority without adding a task
+
+**Aim:** Verify that a malformed priority flag does not become part of a task description or create a task.
+
+### Input
+```text
+todo /priority urgent
+list
+bye
+```
+
+### Expected output
+```text
+Hello! I'm Tard_T.
+What can I do for you?
+____________________________________________________________
+
+____________________________________________________________
+Invalid priority. Priority is optional; when included, use /priority low, /priority medium, or /priority high.
+____________________________________________________________
+____________________________________________________________
+Your task list is empty!
+____________________________________________________________
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+## Test case: Reject an event whose end is before its start
+
+**Aim:** Verify that an impossible event time range does not create a task.
+
+### Input
+```text
+event workshop /from 2026-10-20T16:00 /to 2026-10-20T15:00
+list
+bye
+```
+
+### Expected output
+```text
+Hello! I'm Tard_T.
+What can I do for you?
+____________________________________________________________
+
+____________________________________________________________
+Event end time must be after its start time.
+____________________________________________________________
+____________________________________________________________
+Your task list is empty!
+____________________________________________________________
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
 ## Test case: Exit the application
 
 **Aim:** Verify that the application shows its welcome message and exits politely when the user enters `bye`.
@@ -111,9 +192,10 @@ bye -> exits the interface
 list -> lists all the tasks and their status
 mark [task number] -> marks the task and show their status
 unmark [task number] -> unmarks the task and show their status
-todo [task name] [/priority low|medium|high] -> adds a todo task to taskList
-deadline [task name] /by [deadline] [/priority low|medium|high] -> adds a deadline task to taskList
-event [task name] /from [start time] /to [end time] [/priority low|medium|high] -> adds an event task to taskList
+Priority is optional; omit it to use low priority.
+todo [task name] (optional: /priority low|medium|high) -> adds a todo task to taskList
+deadline [task name] /by [deadline] (optional: /priority low|medium|high) -> adds a deadline task to taskList
+event [task name] /from [start time] /to [end time] (optional: /priority low|medium|high) -> adds an event task to taskList
 delete [task number] -> deletes a task from taskList
 ________________________________
 ________________________________
@@ -259,7 +341,7 @@ Got it. I've added this task:
 Now you have 1 tasks in the list.
 ________________________________
 ________________________________
-    Invalid format. Use: deadline [task name] /by [deadline] [/priority low|medium|high]
+    Invalid format. Use: deadline [task name] /by [deadline] (optional: /priority low|medium|high).
 ________________________________
 ________________________________
 1. [T][ ] read book

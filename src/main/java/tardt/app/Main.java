@@ -5,6 +5,7 @@ import java.io.IOException;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import tardt.TardT;
@@ -14,20 +15,31 @@ import tardt.TardT;
  */
 public class Main extends Application {
 
-    private TardT tardT = new TardT();
+    private final TardT tardT = new TardT();
 
     @Override
     public void start(Stage stage) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("/view/MainWindow.fxml"));
-            AnchorPane ap = fxmlLoader.load();
-            Scene scene = new Scene(ap);
+            AnchorPane rootPane = fxmlLoader.load();
+            Scene scene = new Scene(rootPane);
             stage.setScene(scene);
             fxmlLoader.<MainWindow>getController().setTardT(tardT);
+            stage.setOnCloseRequest(event -> tardT.save());
             stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException exception) {
+            showStartupError();
         }
     }
-}
 
+    /**
+     * Shows a concise startup error instead of exposing an implementation stack trace to the user.
+     *
+     */
+    private void showStartupError() {
+        Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+        errorAlert.setHeaderText("TardT could not start");
+        errorAlert.setContentText("The application files could not be loaded. Please restart the application.");
+        errorAlert.showAndWait();
+    }
+}

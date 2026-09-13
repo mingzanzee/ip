@@ -1,7 +1,9 @@
 package tardt.task;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Locale;
 
 import tardt.exception.TardTException;
 import tardt.priority.Priority;
@@ -10,8 +12,13 @@ import tardt.priority.Priority;
  * A type of Task that has a start and end time associated with it.
  */
 public class Event extends Task {
-    protected LocalDateTime from;
-    protected LocalDateTime to;
+    private static final DateTimeFormatter DISPLAY_FORMAT = DateTimeFormatter.ofPattern("MMM dd uuuu HH:mm",
+            Locale.ENGLISH);
+    private static final String DATE_TIME_FORMAT_ERROR = "Invalid date/time format. Use yyyy-MM-ddTHH:mm "
+            + "(for example, 2026-09-29T12:00).";
+
+    private final LocalDateTime from;
+    private final LocalDateTime to;
 
     /**
      * Constructor for Event object
@@ -26,9 +33,9 @@ public class Event extends Task {
         try {
             this.from = LocalDateTime.parse(from);
             this.to = LocalDateTime.parse(to);
+            validateTimeRange();
         } catch (DateTimeParseException e) {
-            // Try alternative formats or throw a custom exception
-            throw new TardTException("Invalid date/time format. Use yyyy-MM-ddTHH:mm:ss");
+            throw new TardTException(DATE_TIME_FORMAT_ERROR);
         }
     }
 
@@ -38,8 +45,9 @@ public class Event extends Task {
         try {
             this.from = LocalDateTime.parse(from);
             this.to = LocalDateTime.parse(to);
+            validateTimeRange();
         } catch (DateTimeParseException e) {
-            throw new TardTException("Invalid date/time format. Use yyyy-MM-ddTHH:mm:ss");
+            throw new TardTException(DATE_TIME_FORMAT_ERROR);
         }
     }
 
@@ -50,15 +58,7 @@ public class Event extends Task {
      * @return A String in the following form: {shortname of month} {day} {year} {time}.
      */
     public String getFrom() {
-        String unparsed = this.from.toString();
-        String ymd = unparsed.split("T")[0];
-        String time = unparsed.split("T")[1];
-        String[] ymdSplits = ymd.split("-");
-        String year = ymdSplits[0];
-        String month = ymdSplits[1];
-        String day = ymdSplits[2];
-
-        return Month.getShortNameByNumber(month) + " " + day + " " + year + " " + time;
+        return from.format(DISPLAY_FORMAT);
     }
 
     /**
@@ -68,15 +68,7 @@ public class Event extends Task {
      * @return A String in the following form: {shortname of month} {day} {year} {time}.
      */
     public String getTo() {
-        String unparsed = this.to.toString();
-        String ymd = unparsed.split("T")[0];
-        String time = unparsed.split("T")[1];
-        String[] ymdSplits = ymd.split("-");
-        String year = ymdSplits[0];
-        String month = ymdSplits[1];
-        String day = ymdSplits[2];
-
-        return Month.getShortNameByNumber(month) + " " + day + " " + year + " " + time;
+        return to.format(DISPLAY_FORMAT);
     }
 
     /**
@@ -85,7 +77,7 @@ public class Event extends Task {
      * @return A String representing date-time in ISO-8601 format.
      */
     public String getFromRaw() {
-        return this.from.toString();
+        return from.toString();
     }
 
     /**
@@ -94,7 +86,18 @@ public class Event extends Task {
      * @return A String representing date-time in ISO-8601 format.
      */
     public String getToRaw() {
-        return this.to.toString();
+        return to.toString();
+    }
+
+    /**
+     * Ensures an event has a positive duration.
+     *
+     * @throws TardTException if the end is not after the start
+     */
+    private void validateTimeRange() throws TardTException {
+        if (!from.isBefore(to)) {
+            throw new TardTException("Event end time must be after its start time.");
+        }
     }
 
     @Override

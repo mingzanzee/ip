@@ -32,7 +32,10 @@ public class Storage {
             savedTasks.add(formatTaskForSaving(task));
         }
         try {
-            Files.createDirectories(saveFile.getParent());
+            Path parentDirectory = saveFile.getParent();
+            if (parentDirectory != null) {
+                Files.createDirectories(parentDirectory);
+            }
             Files.writeString(saveFile, String.join(System.lineSeparator(), savedTasks));
         } catch (IOException exception) {
             throw new TardTException("Unable to save tasks: " + exception.getMessage());
@@ -47,18 +50,27 @@ public class Storage {
      */
     private String formatTaskForSaving(Task task) {
         String status = task.isDone() ? "1" : "0";
-        String priority = task.getPriority().getKeyword();
+        String taskData;
         if (task instanceof Deadline deadline) {
-            String saved = "D | " + status + " | " + deadline.getDescription() + " | " + deadline.getByRaw();
-            return task.getPriority() == Priority.LOW ? saved : saved + " | " + priority;
-        }
-        if (task instanceof Event event) {
-            String saved = "E | " + status + " | " + event.getDescription() + " | "
+            taskData = "D | " + status + " | " + deadline.getDescription() + " | " + deadline.getByRaw();
+        } else if (task instanceof Event event) {
+            taskData = "E | " + status + " | " + event.getDescription() + " | "
                     + event.getFromRaw() + " | " + event.getToRaw();
-            return task.getPriority() == Priority.LOW ? saved : saved + " | " + priority;
+        } else {
+            taskData = "T | " + status + " | " + task.getDescription();
         }
-        String saved = "T | " + status + " | " + task.getDescription();
-        return task.getPriority() == Priority.LOW ? saved : saved + " | " + priority;
+        return appendPriority(taskData, task.getPriority());
+    }
+
+    /**
+     * Adds the optional priority field used for non-default priorities.
+     *
+     * @param taskData serialized task fields excluding priority
+     * @param priority task priority
+     * @return the complete serialized task line
+     */
+    private String appendPriority(String taskData, Priority priority) {
+        return priority == Priority.LOW ? taskData : taskData + " | " + priority.getKeyword();
     }
 
     /**
@@ -93,7 +105,7 @@ public class Storage {
      */
     private Task createTaskFromSavedLine(String savedTask) {
         String[] parts = savedTask.split("\\s*\\|\\s*", -1);
-        if (parts.length < 3) {
+        if (parts.length < 3 || !isValidStatus(parts[1]) || parts[2].isBlank()) {
             return null;
         }
         Task task;
@@ -130,13 +142,22 @@ public class Storage {
                 default:
                     return null;
             }
-        } catch (TardTException e) {
-            System.out.println("Invalid date/time format in save file");
+        } catch (TardTException exception) {
             return null;
         }
         if (parts[1].equals("1")) {
             task.markAsDone();
         }
         return task;
+    }
+
+    /**
+     * Checks whether a serialized task status is one of the two supported values.
+     *
+     * @param status saved completion status
+     * @return true for an incomplete or completed status
+     */
+    private boolean isValidStatus(String status) {
+        return status.equals("0") || status.equals("1");
     }
 }

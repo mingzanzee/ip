@@ -69,6 +69,10 @@ public class TardT {
         ui.showWelcome();
         boolean isExit = false;
         while (!isExit) {
+            if (!ui.hasNextCommand()) {
+                ui.showBye();
+                break;
+            }
             String userInput = ui.readCommand();
             ui.showLine();
             isExit = Parser.parse(userInput, tasks, ui, storage);

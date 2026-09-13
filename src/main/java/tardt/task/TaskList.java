@@ -9,11 +9,17 @@ import java.util.List;
 public class TaskList {
     private final List<Task> tasks;
 
+    /**
+     * Creates a task list containing a defensive copy of the supplied tasks.
+     *
+     * @param tasks tasks to include in the new list
+     */
     public TaskList(List<Task> tasks) {
         assert tasks != null : "A TaskList must wrap a non-null task collection";
-        this.tasks = tasks;
+        this.tasks = new ArrayList<>(tasks);
     }
 
+    /** Creates an empty task list. */
     public TaskList() {
         this(new ArrayList<>());
     }
@@ -25,9 +31,7 @@ public class TaskList {
      */
     public void add(Task task) {
         assert task != null : "A TaskList must not contain null tasks";
-        int oldSize = tasks.size();
         tasks.add(task);
-        assert tasks.size() == oldSize + 1 : "Adding a task must increase the list size by one";
     }
 
     /**
@@ -60,6 +64,6 @@ public class TaskList {
     }
 
     public List<Task> getTasks() {
-        return tasks;
+        return List.copyOf(tasks);
     }
 }
