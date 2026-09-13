@@ -1,6 +1,9 @@
 package tardt.parser;
 
 import java.util.List;
+import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import tardt.command.Command;
 import tardt.exception.TardTException;
@@ -17,6 +20,12 @@ import tardt.ui.Ui;
  * Class in charge of parsing user inputs.
  */
 public class Parser {
+    /** Matches a priority flag at the end of a task command. */
+    private static final Pattern PRIORITY_FLAG = Pattern.compile("(?:^|\\s)/priority\\s+(\\S+)\\s*$",
+            Pattern.CASE_INSENSITIVE);
+    private static final String OPTIONAL_PRIORITY_FORMAT = " (optional: /priority low|medium|high)";
+    private static final String INVALID_PRIORITY_MESSAGE = "Invalid priority. Priority is optional; when included, use "
+            + "/priority low, /priority medium, or /priority high.";
 
     // ==================== CLI METHOD ====================
 
@@ -59,32 +68,39 @@ public class Parser {
      * @throws TardTException If an error occurs during parsing
      */
     public static String parseForResponse(String userInput, TaskList tasks, Storage storage) throws TardTException {
-        assert userInput != null : "The parser must receive a user input string";
         assert tasks != null : "The parser must receive the application's task list";
         assert storage != null : "The parser must receive storage for mutating commands";
-        String[] parts = userInput.split(" ");
-        String taskType = parts[0];
-        Command command = Command.fromKeyword(taskType);
+        if (userInput == null || userInput.isBlank()) {
+            throw new TardTException("Please enter a command.");
+        }
+
+        String trimmedInput = userInput.trim();
+        int firstWhitespace = findFirstWhitespace(trimmedInput);
+        String taskType = firstWhitespace == -1 ? trimmedInput : trimmedInput.substring(0, firstWhitespace);
+        String arguments = firstWhitespace == -1 ? "" : trimmedInput.substring(firstWhitespace).trim();
+        Command command = Command.fromKeyword(taskType.toLowerCase(Locale.ROOT));
 
         switch (command) {
             case BYE:
+                requireNoArguments("bye", arguments);
                 return "Bye. Hope to see you again soon!";
             case LIST:
+                requireNoArguments("list", arguments);
                 return getTaskListString(tasks);
             case MARK:
-                return handleMarkForResponse(tasks, userInput, storage);
+                return handleMarkForResponse(tasks, arguments, storage);
             case UNMARK:
-                return handleUnmarkForResponse(tasks, userInput, storage);
+                return handleUnmarkForResponse(tasks, arguments, storage);
             case TODO:
-                return handleTodoForResponse(tasks, userInput, storage);
+                return handleTodoForResponse(tasks, arguments, storage);
             case DEADLINE:
-                return handleDeadlineForResponse(tasks, userInput, storage);
+                return handleDeadlineForResponse(tasks, arguments, storage);
             case EVENT:
-                return handleEventForResponse(tasks, userInput, storage);
+                return handleEventForResponse(tasks, arguments, storage);
             case DELETE:
-                return handleDeleteForResponse(tasks, userInput, storage);
+                return handleDeleteForResponse(tasks, arguments, storage);
             case FIND:
-                return handleFindForResponse(tasks, userInput, storage);
+                return handleFindForResponse(tasks, arguments, storage);
             default:
                 throw new TardTException("'" + taskType + "' is not a valid input.\n"
                         + "Valid input formats: \n"
@@ -92,11 +108,42 @@ public class Parser {
                         + "list -> lists all the tasks and their status\n"
                         + "mark [task number] -> marks the task and show their status\n"
                         + "unmark [task number] -> unmarks the task and show their status\n"
-                        + "todo [task name] [/priority low|medium|high] -> adds a todo task to taskList\n"
-                        + "deadline [task name] /by [deadline] [/priority low|medium|high] -> adds a deadline task to taskList\n"
-                        + "event [task name] /from [start time] /to [end time] [/priority low|medium|high] -> adds an event task to taskList\n"
+                        + "Priority is optional; omit it to use low priority.\n"
+                        + "todo [task name]" + OPTIONAL_PRIORITY_FORMAT + " -> adds a todo task to taskList\n"
+                        + "deadline [task name] /by [deadline]" + OPTIONAL_PRIORITY_FORMAT
+                        + " -> adds a deadline task to taskList\n"
+                        + "event [task name] /from [start time] /to [end time]" + OPTIONAL_PRIORITY_FORMAT
+                        + " -> adds an event task to taskList\n"
                         + "delete [task number] -> deletes a task from taskList\n"
                         + "find [search string] -> finds a task consisting of the search string");
+        }
+    }
+
+    /**
+     * Finds the first whitespace character in a command without assuming spaces are used as separators.
+     *
+     * @param input trimmed command text
+     * @return the index of the first whitespace character, or -1 when none exists
+     */
+    private static int findFirstWhitespace(String input) {
+        for (int index = 0; index < input.length(); index++) {
+            if (Character.isWhitespace(input.charAt(index))) {
+                return index;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * Rejects arguments supplied to a command that does not accept any.
+     *
+     * @param command command keyword shown in the error message
+     * @param arguments text after the command keyword
+     * @throws TardTException if arguments were supplied
+     */
+    private static void requireNoArguments(String command, String arguments) throws TardTException {
+        if (!arguments.isEmpty()) {
+            throw new TardTException("The '" + command + "' command does not take additional input.");
         }
     }
 
@@ -127,21 +174,19 @@ public class Parser {
      * @return The validated task index (0-based)
      * @throws TardTException If the index is invalid
      */
-    private static int parseTaskIndex(String userInput, TaskList tasks, String prefix) throws TardTException {
-        String trimmed = userInput.trim();
-        if (trimmed.equals(prefix)) {
+    private static int parseTaskIndex(String arguments, TaskList tasks, String prefix) throws TardTException {
+        if (arguments.isEmpty()) {
             throw new TardTException("Missing task number after '" + prefix + "'. Use " + prefix + " [task number].");
         }
 
-        String rest = userInput.substring(prefix.length()).trim();
         try {
-            int idx = Integer.parseInt(rest) - 1; // Convert to 0-based
+            int idx = Integer.parseInt(arguments) - 1; // Convert to 0-based
             if (idx < 0 || idx >= tasks.size()) {
                 throw new TardTException("Task number out of range. There are " + tasks.size() + " tasks.");
             }
             return idx;
         } catch (NumberFormatException e) {
-            throw new TardTException("'" + rest + "' is not a valid integer.");
+            throw new TardTException("'" + arguments + "' is not a valid integer.");
         }
     }
 
@@ -190,16 +235,18 @@ public class Parser {
      * @throws TardTException
      */
     private static ParsedPriority parsePriority(String input) throws TardTException {
-        String marker = " /priority ";
-        int index = input.lastIndexOf(marker);
-        if (index == -1) {
+        Matcher matcher = PRIORITY_FLAG.matcher(input);
+        if (!matcher.find()) {
+            if (input.toLowerCase(Locale.ROOT).contains("/priority")) {
+                throw new TardTException(INVALID_PRIORITY_MESSAGE);
+            }
             return new ParsedPriority(input, Priority.LOW);
         }
-        String text = input.substring(0, index).trim();
-        String keyword = input.substring(index + marker.length()).trim();
+        String text = input.substring(0, matcher.start()).trim();
+        String keyword = matcher.group(1);
         Priority priority = Priority.fromKeyword(keyword);
         if (text.isEmpty() || priority == null) {
-            throw new TardTException("Invalid priority. Use /priority low, /priority medium, or /priority high.");
+            throw new TardTException(INVALID_PRIORITY_MESSAGE);
         }
         return new ParsedPriority(text, priority);
     }
@@ -215,13 +262,13 @@ public class Parser {
      * @return The chatbot's string response.
      * @throws TardTException A unique exception class for TardT.
      */
-    private static String handleTodoForResponse(TaskList tasks, String userInput, Storage storage)
+    private static String handleTodoForResponse(TaskList tasks, String arguments, Storage storage)
             throws TardTException {
-        ParsedPriority parsed = parsePriority(userInput.substring(5).trim());
+        ParsedPriority parsed = parsePriority(arguments);
         String description = parsed.text();
         if (description.isEmpty()) {
             throw new TardTException("Invalid format: Description of todo cannot be empty. Use: todo [task name]"
-                    + " [/priority low|medium|high]");
+                    + OPTIONAL_PRIORITY_FORMAT + ".");
         }
 
         // If everything is ok (description present), add ToDo to taskList
@@ -242,15 +289,15 @@ public class Parser {
      * @return The chatbot's string response.
      * @throws TardTException A unique exception class for TardT.
      */
-    private static String handleDeadlineForResponse(TaskList tasks, String userInput, Storage storage)
+    private static String handleDeadlineForResponse(TaskList tasks, String arguments, Storage storage)
             throws TardTException {
-        ParsedPriority parsed = parsePriority(userInput.substring(9).trim());
+        ParsedPriority parsed = parsePriority(arguments);
         String rest = parsed.text();
 
         int byIndex = rest.indexOf(" /by ");
         if (byIndex == -1) {
             throw new TardTException("Invalid format. Use: deadline [task name] /by [deadline]"
-                    + " [/priority low|medium|high]");
+                    + OPTIONAL_PRIORITY_FORMAT + ".");
         }
 
         String description = rest.substring(0, byIndex).trim();
@@ -281,15 +328,15 @@ public class Parser {
      * @return The chatbot's string response.
      * @throws TardTException A unique exception class for TardT.
      */
-    private static String handleEventForResponse(TaskList tasks, String userInput, Storage storage)
+    private static String handleEventForResponse(TaskList tasks, String arguments, Storage storage)
             throws TardTException {
-        ParsedPriority parsed = parsePriority(userInput.substring(6).trim());
+        ParsedPriority parsed = parsePriority(arguments);
         String rest = parsed.text();
 
         int fromIndex = rest.indexOf(" /from ");
         if (fromIndex == -1) {
             throw new TardTException("Invalid format. Use: event [task name] /from [start] /to [end]"
-                    + " [/priority low|medium|high]");
+                    + OPTIONAL_PRIORITY_FORMAT + ".");
         }
 
         String description = rest.substring(0, fromIndex).trim();
@@ -298,7 +345,7 @@ public class Parser {
         int toIndex = afterDesc.indexOf(" /to ");
         if (toIndex == -1) {
             throw new TardTException("Invalid format. Use: event [task name] /from [start] /to [end]"
-                    + " [/priority low|medium|high]");
+                    + OPTIONAL_PRIORITY_FORMAT + ".");
         }
 
         String from = afterDesc.substring(0, toIndex).trim();
@@ -332,9 +379,9 @@ public class Parser {
      * @return The chatbot's string response.
      * @throws TardTException A unique exception class for TardT.
      */
-    private static String handleDeleteForResponse(TaskList tasks, String userInput, Storage storage)
+    private static String handleDeleteForResponse(TaskList tasks, String arguments, Storage storage)
             throws TardTException {
-        int idx = parseTaskIndex(userInput, tasks, "delete");
+        int idx = parseTaskIndex(arguments, tasks, "delete");
         assert idx >= 0 && idx < tasks.size() : "parseTaskIndex must return a valid task index";
         int oldSize = tasks.size();
         Task task = tasks.delete(idx);
@@ -352,17 +399,13 @@ public class Parser {
      * @return The chatbot's string response.
      * @throws TardTException A unique exception class for TardT.
      */
-    private static String handleFindForResponse(TaskList tasks, String userInput, Storage storage)
+    private static String handleFindForResponse(TaskList tasks, String arguments, Storage storage)
             throws TardTException {
-        String trimmed = userInput.trim();
-        if (trimmed.equals("find")) {
+        if (arguments.isEmpty()) {
             throw new TardTException("Missing search string after 'find'.");
         }
 
-        String keyword = userInput.substring(5).trim();
-        if (keyword.isEmpty()) {
-            throw new TardTException("Missing search string after 'find'.");
-        }
+        String keyword = arguments;
 
         List<Task> matches = tasks.getTasks().stream()
                 .filter(task -> task.getDescription().contains(keyword))

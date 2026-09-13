@@ -19,6 +19,8 @@ import javafx.scene.layout.HBox;
  * and a label containing text from the speaker.
  */
 public class DialogBox extends HBox {
+    private static final int DEFAULT_COLOUR_INDEX = 1;
+
     @FXML
     private Label dialog;
     @FXML
@@ -30,8 +32,8 @@ public class DialogBox extends HBox {
             fxmlLoader.setController(this);
             fxmlLoader.setRoot(this);
             fxmlLoader.load();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException exception) {
+            throw new IllegalStateException("Unable to load the dialog layout.", exception);
         }
 
         dialog.setText(text.stripTrailing());
@@ -50,7 +52,7 @@ public class DialogBox extends HBox {
     }
 
     public static DialogBox getUserDialog(String text, Image img) {
-        return getUserDialog(text, img, 1);
+        return getUserDialog(text, img, DEFAULT_COLOUR_INDEX);
     }
 
     /**
@@ -66,7 +68,7 @@ public class DialogBox extends HBox {
     }
 
     public static DialogBox getTardTDialog(String text, Image img) {
-        return getTardTDialog(text, img, 1);
+        return getTardTDialog(text, img, DEFAULT_COLOUR_INDEX);
     }
 
     /**
@@ -78,8 +80,8 @@ public class DialogBox extends HBox {
      * @return a flipped dialog box containing TardT's message
      */
     public static DialogBox getTardTDialog(String text, Image img, int colourIndex) {
-        var db = new DialogBox(text, img, colourIndex);
-        db.flip();
-        return db;
+        DialogBox dialogBox = new DialogBox(text, img, colourIndex);
+        dialogBox.flip();
+        return dialogBox;
     }
 }
