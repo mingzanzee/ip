@@ -2,7 +2,6 @@ package tardt.app;
 
 import java.io.IOException;
 import java.util.Collections;
-import java.util.concurrent.ThreadLocalRandom;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -25,7 +24,7 @@ public class DialogBox extends HBox {
     @FXML
     private ImageView displayPicture;
 
-    private DialogBox(String text, Image img) {
+    private DialogBox(String text, Image img, int colourIndex) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(MainWindow.class.getResource("/view/DialogBox.fxml"));
             fxmlLoader.setController(this);
@@ -37,8 +36,7 @@ public class DialogBox extends HBox {
 
         dialog.setText(text.stripTrailing());
         displayPicture.setImage(img);
-        // Give each message a softly coloured segment while keeping the palette consistent.
-        getStyleClass().add("dialog-colour-" + ThreadLocalRandom.current().nextInt(1, 6));
+        getStyleClass().add("dialog-colour-" + colourIndex);
     }
 
     /**
@@ -52,11 +50,35 @@ public class DialogBox extends HBox {
     }
 
     public static DialogBox getUserDialog(String text, Image img) {
-        return new DialogBox(text, img);
+        return getUserDialog(text, img, 1);
+    }
+
+    /**
+     * Creates a user dialog using the requested colour from the dialog palette.
+     *
+     * @param text message to display
+     * @param img image representing the user
+     * @param colourIndex palette colour number, from 1 to 5
+     * @return a dialog box containing the user's message
+     */
+    public static DialogBox getUserDialog(String text, Image img, int colourIndex) {
+        return new DialogBox(text, img, colourIndex);
     }
 
     public static DialogBox getTardTDialog(String text, Image img) {
-        var db = new DialogBox(text, img);
+        return getTardTDialog(text, img, 1);
+    }
+
+    /**
+     * Creates a TardT dialog using the requested colour from the dialog palette.
+     *
+     * @param text message to display
+     * @param img image representing TardT
+     * @param colourIndex palette colour number, from 1 to 5
+     * @return a flipped dialog box containing TardT's message
+     */
+    public static DialogBox getTardTDialog(String text, Image img, int colourIndex) {
+        var db = new DialogBox(text, img, colourIndex);
         db.flip();
         return db;
     }
