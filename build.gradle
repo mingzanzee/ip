@@ -74,7 +74,7 @@ jar {
 }
 
 shadowJar {
-    archiveFileName = 'Tard_T.jar'
+    archiveFileName = 'TardT.jar'
 }
 
 /**
