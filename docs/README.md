@@ -7,11 +7,11 @@ TardT is a desktop task manager for keeping track of to-dos, deadlines, and even
 ## Quick start
 
 1. Ensure Java 25 is installed.
-2. Download `Tard_T.jar` and place it in a folder of your choice.
+2. Download `TardT.jar` and place it in a folder of your choice.
 3. Open a terminal in that folder and run:
 
    ```sh
-   java -jar Tard_T.jar
+   java -jar TardT.jar
    ```
 
 4. Type a command and press Enter. For example, enter `todo read the user guide`.
