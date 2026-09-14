@@ -15,7 +15,7 @@ bye
 
 ### Expected output
 ```text
-Hello! I'm Tard_T.
+Hello! I'm TardT.
 What can I do for you?
 ____________________________________________________________
 
@@ -42,7 +42,7 @@ bye
 
 ### Expected output
 ```text
-Hello! I'm Tard_T.
+Hello! I'm TardT.
 What can I do for you?
 ____________________________________________________________
 
@@ -69,7 +69,7 @@ bye
 
 ### Expected output
 ```text
-Hello! I'm Tard_T.
+Hello! I'm TardT.
 What can I do for you?
 ____________________________________________________________
 

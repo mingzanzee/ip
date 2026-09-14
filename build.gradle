@@ -62,7 +62,7 @@ test {
 }
 
 application {
-    // mainClass = 'Tard_T.Tard_T'
+    // mainClass = 'tardt.TardT'
     mainClass.set("tardt.app.Launcher")
 }
 

@@ -63,7 +63,7 @@ public class MainWindow {
         tardT = t;
         dialogContainer.getChildren().add(
                 DialogBox.getTardTDialog(
-                        "Hello! I'm Tard_T. \n"
+                        "Hello! I'm TardT. \n"
                                 + "What can I do for you?",
                         tardTImage,
                         getNextDialogColour()
