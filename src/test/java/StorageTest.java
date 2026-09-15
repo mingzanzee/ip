@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import tardt.exception.TardTException;
+import tardt.priority.Priority;
 import tardt.storage.Storage;
 import tardt.task.Deadline;
 import tardt.task.Event;
@@ -76,5 +77,33 @@ public class StorageTest {
 
         assertEquals(1, loaded.size());
         assertEquals("valid todo", loaded.get(0).getDescription());
+    }
+
+    @Test
+    public void saveThenLoad_descriptionWithPipeAndBackslash_preservesDescriptionAndPriority() throws TardTException {
+        Path saveFile = tempDir.resolve("tasks.txt");
+        Storage storage = new Storage(saveFile);
+        ToDo todo = new ToDo("review | save to C:\\tasks", Priority.HIGH);
+
+        storage.save(List.of(todo));
+        List<Task> loaded = storage.load();
+
+        assertEquals(1, loaded.size());
+        assertEquals("review | save to C:\\tasks", loaded.get(0).getDescription());
+        assertEquals(Priority.HIGH, loaded.get(0).getPriority());
+    }
+
+    @Test
+    public void load_legacyDescriptionWithPipeAndPriority_recoversDescriptionAndPriority()
+            throws IOException, TardTException {
+        Path saveFile = tempDir.resolve("tasks.txt");
+        Files.writeString(saveFile, "T | 0 | review | old format | high");
+        Storage storage = new Storage(saveFile);
+
+        List<Task> loaded = storage.load();
+
+        assertEquals(1, loaded.size());
+        assertEquals("review | old format", loaded.get(0).getDescription());
+        assertEquals(Priority.HIGH, loaded.get(0).getPriority());
     }
 }
