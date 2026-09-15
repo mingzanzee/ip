@@ -14,6 +14,9 @@ import tardt.TardT;
  * A GUI for TardT using FXML.
  */
 public class Main extends Application {
+    /** Smallest usable window dimensions, which leave room for the command field and Send button. */
+    private static final int MINIMUM_WINDOW_WIDTH = 280;
+    private static final int MINIMUM_WINDOW_HEIGHT = 200;
 
     private final TardT tardT = new TardT();
 
@@ -24,6 +27,8 @@ public class Main extends Application {
             AnchorPane rootPane = fxmlLoader.load();
             Scene scene = new Scene(rootPane);
             stage.setTitle("TardT");
+            stage.setMinWidth(MINIMUM_WINDOW_WIDTH);
+            stage.setMinHeight(MINIMUM_WINDOW_HEIGHT);
             stage.setScene(scene);
             fxmlLoader.<MainWindow>getController().setTardT(tardT);
             stage.setOnCloseRequest(event -> tardT.save());

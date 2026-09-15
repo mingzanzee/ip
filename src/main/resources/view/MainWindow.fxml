@@ -7,25 +7,34 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
 <AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="400.0" styleClass="app-root" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tardt.app.MainWindow">
     <children>
-        <TextField fx:id="userInput" layoutY="558.0" onAction="#handleUserInput" prefHeight="48.0" prefWidth="324.0" promptText="Type a command..." AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="76.0"/>
-        <Button fx:id="sendButton" layoutX="324.0" layoutY="558.0" mnemonicParsing="false" onAction="#handleUserInput" prefHeight="48.0" prefWidth="76.0" text="Send" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-        <HBox alignment="CENTER_LEFT" prefHeight="48.0" spacing="8.0" styleClass="settings-bar" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
-                <ToggleButton fx:id="darkModeToggle" mnemonicParsing="false" onAction="#handleThemeToggle" text="Dark mode" />
-                <Label text="Text size" />
-                <Slider fx:id="fontSizeSlider" blockIncrement="1.0" majorTickUnit="2.0" max="20.0" min="12.0" prefWidth="110.0" showTickLabels="false" showTickMarks="false" snapToTicks="true" value="14.0" />
-                <Label fx:id="fontSizeLabel" styleClass="font-size-label" text="14 px" />
+                <FlowPane hgap="8.0" styleClass="settings-bar" vgap="4.0">
+                    <children>
+                        <ToggleButton fx:id="darkModeToggle" mnemonicParsing="false" onAction="#handleThemeToggle" text="Dark mode" />
+                        <Label text="Text size" />
+                        <Slider fx:id="fontSizeSlider" blockIncrement="1.0" majorTickUnit="2.0" max="20.0" min="12.0" prefWidth="110.0" showTickLabels="false" showTickMarks="false" snapToTicks="true" value="14.0" />
+                        <Label fx:id="fontSizeLabel" styleClass="font-size-label" text="14 px" />
+                    </children>
+                </FlowPane>
+                <ScrollPane fx:id="scrollPane" fitToWidth="true" hbarPolicy="NEVER" minHeight="0.0" vvalue="1.0" VBox.vgrow="ALWAYS">
+                    <content>
+                        <VBox fx:id="dialogContainer" fillWidth="true" prefWidth="388.0" spacing="10.0" styleClass="bg-pane" stylesheets="@styles.css" />
+                    </content>
+                </ScrollPane>
+                <HBox alignment="CENTER_LEFT" minHeight="48.0">
+                    <children>
+                        <TextField fx:id="userInput" HBox.hgrow="ALWAYS" minHeight="48.0" minWidth="0.0" onAction="#handleUserInput" prefHeight="48.0" promptText="Type a command..." />
+                        <Button fx:id="sendButton" minHeight="48.0" minWidth="-Infinity" mnemonicParsing="false" onAction="#handleUserInput" prefHeight="48.0" text="Send" />
+                    </children>
+                </HBox>
             </children>
-        </HBox>
-        <ScrollPane fx:id="scrollPane" fitToWidth="true" hbarPolicy="NEVER" prefHeight="552.0" prefWidth="400.0" vvalue="1.0" AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="48.0">
-            <content>
-                <VBox fx:id="dialogContainer" fillWidth="true" prefWidth="388.0" spacing="10.0" styleClass="bg-pane" stylesheets="@styles.css" />
-            </content>
-        </ScrollPane>
+        </VBox>
     </children>
 </AnchorPane>

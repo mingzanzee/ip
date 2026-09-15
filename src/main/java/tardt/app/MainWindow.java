@@ -2,6 +2,7 @@ package tardt.app;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -50,7 +51,6 @@ public class MainWindow {
      */
     @FXML
     public void initialize() {
-        scrollPane.vvalueProperty().bind(dialogContainer.heightProperty());
         fontSizeSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
             int fontSize = (int) Math.round(newValue.doubleValue());
             setFontSize(fontSize);
@@ -83,6 +83,7 @@ public class MainWindow {
                 DialogBox.getUserDialog(input, userImage, getNextDialogColour()),
                 DialogBox.getTardTDialog(response, tardTImage, getNextDialogColour())
         );
+        scrollToBottom();
         userInput.clear();
 
         if (response.equals("Bye. Hope to see you again soon!")) {
@@ -102,6 +103,14 @@ public class MainWindow {
                 }
         ));
         timeline.play();
+    }
+
+    /**
+     * Moves to the newest messages after JavaFX has laid out the added dialog boxes.
+     * The scroll value is deliberately not bound so users can still scroll with the mouse wheel.
+     */
+    private void scrollToBottom() {
+        Platform.runLater(() -> scrollPane.setVvalue(1.0));
     }
 
     /**
